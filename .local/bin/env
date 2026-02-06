@@ -1,0 +1,11 @@
+#!/bin/sh
+# add binaries to PATH if they aren't added yet
+# affix colons on either side of $PATH to simplify matching
+case ":${PATH}:" in
+    *:"$HOME/CascadeProjects/governance-seo-report/.local/bin":*)
+        ;;
+    *)
+        # Prepending path in case a system-installed binary needs to be overridden
+        export PATH="$HOME/CascadeProjects/governance-seo-report/.local/bin:$PATH"
+        ;;
+esac
