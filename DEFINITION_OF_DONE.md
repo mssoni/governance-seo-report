@@ -60,7 +60,7 @@
 - [ ] Max pages cap enforced (hard limit, test exists) **[H]** _(test suite)_
 - [ ] Per-domain rate limit / concurrency cap enforced **[R]**
 
-## Auto-Reject Triggers (10 deterministic rules)
+## Auto-Reject Triggers (11 deterministic rules)
 
 If ANY of these are true, the Review Agent MUST reject immediately:
 
@@ -74,9 +74,21 @@ If ANY of these are true, the Review Agent MUST reject immediately:
 8. `make check` fails after review fixes
 9. `make dod` fails after review fixes
 10. `CHANGE_LOG.md` entry missing for the Change ID
+11. Any of the 8 lifecycle steps was skipped — regardless of execution mode (INLINE or STANDARD) **[H]**
+
+## Execution Modes
+
+Changes run in one of two modes, selected during DECOMPOSE (see `CHANGE_PROCESS.md` §2.1):
+
+- **INLINE**: Orchestrator develops and reviews directly (no agent spawn). All gates still apply.
+- **STANDARD**: Dev agent(s) + Review Agent spawned as separate sub-agents.
+
+Mode is determined by **surface-type criteria** (what files/modules are touched), never by perceived complexity or diff size. If INLINE execution discovers the change touches a sensitive surface, it escalates to STANDARD and adds `[MODE_ESCALATION]` label to `CHANGE_LOG.md`.
+
+Both modes execute all 8 steps. Mode only controls *who* runs steps 3–6.
 
 ## Umbrella Reject Rule
 
-In addition to the 10 triggers above: **reject if any DoD checklist item fails**, even if
+In addition to the 11 triggers above: **reject if any DoD checklist item fails**, even if
 it is not covered by a specific auto-reject trigger. The triggers catch the most common
 failures deterministically; the checklist catches everything else.

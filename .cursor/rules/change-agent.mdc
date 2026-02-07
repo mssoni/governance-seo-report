@@ -16,7 +16,7 @@ Activate this process when the user's message implies a change to the codebase:
 
 ## Workflow
 
-### DECOMPOSE (6 sub-steps)
+### DECOMPOSE (7 sub-steps)
 1. Read `CHANGE_PROCESS.md` for the full lifecycle
 2. Read `CHANGE_MANIFEST.json` for current contract version, commit SHAs, and compatibility matrix
 3. Read `backend/ARCHITECTURE.md` and `frontend/ARCHITECTURE.md` for current state
@@ -27,41 +27,64 @@ Activate this process when the user's message implies a change to the codebase:
 8. **Confidence signal:** Rate HIGH/MEDIUM/LOW — if LOW, bias toward smaller stories
 9. Run `./scripts/new_change_id.sh` to allocate the next Change ID (CHG-NNN)
 10. Log the change in `CHANGE_LOG.md` as Status: IN_PROGRESS (with Labels if applicable)
+11. **Select execution mode** (see §2.1 in CHANGE_PROCESS.md):
+    - Evaluate INLINE criteria: no schema/contract change, no new files, no IO/security/pipeline module touched, single-repo only, config/copy/style changes only
+    - If ALL criteria met → **INLINE** (orchestrator develops + reviews directly)
+    - If ANY criterion fails → **STANDARD** (spawn dev agent(s) + review agent)
+    - Record mode in CHANGE_LOG.md entry
 
 ### DEVELOP + REVIEW + MERGE
-11. Create feature branches: `change/CHG-NNN-short-description` (uppercase CHG)
-12. Spawn dev agents in parallel using the Task tool (backend + frontend, or just one)
-13. After dev agents complete, spawn a review agent
-14. Review Agent reports APPROVED/REJECTED (does NOT merge)
-15. If approved: orchestrator runs merge gate:
-    a. Verify `make check` green in both repos
-    b. Verify `make dod` green in both repos
+
+**STANDARD mode (spawn agents):**
+12. Create feature branches: `change/CHG-NNN-short-description` (uppercase CHG)
+13. Spawn dev agents in parallel using the Task tool (backend + frontend, or just one)
+14. After dev agents complete, spawn a review agent
+15. Review Agent reports APPROVED/REJECTED (does NOT merge)
+
+**INLINE mode (orchestrator executes directly):**
+12. Create feature branch: `change/CHG-NNN-short-description`
+13. Orchestrator develops directly — TDD still required (test first → fail → implement → pass)
+14. Orchestrator reviews inline — run `make check` + `make dod` + inspect `git diff main`
+15. If any INLINE criteria are violated during execution (change unexpectedly touches schema/IO/security/cross-repo):
+    - STOP inline execution
+    - Add `[MODE_ESCALATION]` label to CHANGE_LOG
+    - Continue in STANDARD mode (spawn agents)
+
+**Both modes — merge gate:**
+16. If approved: orchestrator runs merge gate:
+    a. Verify `make check` green in affected repo(s)
+    b. Verify `make dod` green in affected repo(s)
     c. Verify CHANGE_LOG.md entry is complete
     d. Verify no unresolved NEEDS_PRODUCT_DECISION labels
-16. Atomic cross-repo merge (always `--no-ff`, never squash):
+17. Atomic cross-repo merge (always `--no-ff`, never squash):
     a. Append STARTED entry to `MERGE_TRANSACTIONS.md`
     b. Merge backend branch to main: `git merge --no-ff change/CHG-NNN-...` (if changed)
     c. Merge frontend branch to main: `git merge --no-ff change/CHG-NNN-...` (if changed)
     d. If (c) fails → revert (b), log ROLLED_BACK in `MERGE_TRANSACTIONS.md`, mark PARTIAL_MERGE_BLOCKED
     e. Only after both succeed: update `CHANGE_MANIFEST.json` with both merge commit SHAs
     f. Log COMPLETED in `MERGE_TRANSACTIONS.md`
-17. Update `CHANGE_LOG.md` status to COMPLETE
-18. Report summary to user
+18. Update `CHANGE_LOG.md` status to COMPLETE
+19. Report summary to user
 
 ## Rules
 
+- **ALL 8 STEPS, EVERY TIME.** No step is ever skipped. What changes is the execution mode (INLINE vs STANDARD), which controls *how* steps 3–6 execute, not *whether* they run.
+- **Risk is determined by what you touch, not by how much you change.** Mode selection uses objective surface-type criteria (paths, module types, schema impact), never perceived complexity or diff size.
+- **INLINE mode is single-brain execution, not a quick hack.** All gates still apply: TDD, `make check`, `make dod`, doc updates, merge protocol.
 - Never ask the user for permission to proceed — execute autonomously (unless NEEDS_PRODUCT_DECISION)
 - Always run pre-flight invariant check before writing stories (§3.1)
 - Always run outcome framing internally — escalate only if wrong metric or high complexity/low impact
 - Always assign Risk Level (LOW/MEDIUM/HIGH) and at least 1 Out of Scope item per story
-- Always output Confidence Signal (HIGH/MEDIUM/LOW) before spawning agents
-- Always use TDD (test first, then implement)
+- Always output Confidence Signal (HIGH/MEDIUM/LOW) before selecting mode
+- Always use TDD (test first, then implement) — in both INLINE and STANDARD modes
 - Always run `make check` + `make dod` before and after changes
-- Always update documentation (ARCHITECTURE.md, PROGRESS.md)
+- Always update documentation (ARCHITECTURE.md, PROGRESS.md, CURRENT_TASKS.md)
 - Always run `make dod` + `DEFINITION_OF_DONE.md` checklist before merge
+- In STANDARD mode: always spawn a Review Agent — no change merges without review
+- In INLINE mode: orchestrator reviews directly — same checks, no agent spawn
 - Use Contract-First if any API schema changes — bump contract_version
 - Follow naming: `CHG-NNN` uppercase everywhere, branch `change/CHG-NNN-desc`
 - IO boundary: only designated fetch modules may do HTTP
-- Review Agent approves but does NOT merge — orchestrator handles merge gate
+- Review (agent or inline) approves but does NOT merge — orchestrator handles merge gate
 - When ambiguity arises, apply Global Default Behavior Rules (§3.6): prefer additive, readable, safe, explicit, simple, contained
 - No effort estimates, time estimates, or story points — this process is outcome-driven

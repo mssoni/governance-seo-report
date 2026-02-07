@@ -16,6 +16,8 @@ Every change follows an **8-step lifecycle**. The assistant acts as a **Change A
 
 **Minimal ambiguity; remaining cases are explicitly escalated.** The user's only role is to describe the change. The process uses hard gates where possible and deterministic heuristics elsewhere. If acceptance criteria cannot be written objectively, the orchestrator escalates with a `NEEDS_PRODUCT_DECISION` label.
 
+**ABSOLUTE RULE — ALL 8 STEPS, EVERY TIME:** Every change follows all 8 steps. No step is ever skipped. What changes is the **execution mode** — INLINE or STANDARD — which controls *how* steps 3–6 execute, never *whether* they execute. Mode is determined by objective surface-type criteria (what files/modules are touched), not by perceived complexity or diff size. Risk is determined by what you touch, not by how much you change.
+
 ---
 
 ## 1. Input Format
@@ -39,7 +41,7 @@ User Prompt
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
-│ Step 1: DECOMPOSE (6 sub-steps)                     │
+│ Step 1: DECOMPOSE (7 sub-steps)                     │
 │                                                     │
 │ 1a. CONTEXT GATHER                                  │
 │   - Read ARCHITECTURE.md (both repos)               │
@@ -49,7 +51,7 @@ User Prompt
 │                                                     │
 │ 1b. PRE-FLIGHT INVARIANT CHECK (reject early)       │
 │   - Does this violate a core invariant?             │
-│     (max 12 pages, no live crawl without consent,   │
+│     (max 20 pages, no live crawl without consent,   │
 │      no state without rollback, no auth in V1)      │
 │   - Does this contradict a V1 non-goal?             │
 │     (no auth, no snapshots, no scheduled emails,    │
@@ -85,6 +87,11 @@ User Prompt
 │   - Assign Change ID via ./scripts/new_change_id.sh │
 │   - Write stories to CHANGE_LOG.md                  │
 │   - Report decomposition to user (brief summary)    │
+│                                                     │
+│ 1g. SELECT EXECUTION MODE (see §2.1)                │
+│   - Evaluate surface-type criteria                  │
+│   - Result: INLINE or STANDARD                      │
+│   - Record mode in CHANGE_LOG.md entry              │
 └─────────────────────────────────────────────────────┘
     │
     ▼
@@ -98,9 +105,16 @@ User Prompt
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
-│ Step 3: DEVELOP (parallel agents)                   │
+│ Step 3: DEVELOP                                     │
+│                                                     │
+│ STANDARD mode:                                      │
 │ - Spawn Agent A (backend) + Agent B (frontend)      │
-│ - Each agent follows TDD:                           │
+│ - If only one repo affected, spawn only one agent   │
+│                                                     │
+│ INLINE mode:                                        │
+│ - Orchestrator executes directly (no agent spawn)   │
+│                                                     │
+│ Both modes — TDD is mandatory:                      │
 │   1. Write test → must fail                         │
 │   2. Implement → test must pass                     │
 │   3. Run `make check` → all green                   │
@@ -108,7 +122,6 @@ User Prompt
 │   Bump contract_version → update CONTRACTS.md       │
 │   → types → golden fixtures → CHANGE_MANIFEST.json  │
 │ - IO boundary enforced: only fetch modules do HTTP  │
-│ - If only one repo affected, spawn only one agent   │
 └─────────────────────────────────────────────────────┘
     │
     ▼
@@ -132,11 +145,20 @@ User Prompt
     ▼
 ┌─────────────────────────────────────────────────────┐
 │ Step 6: REVIEW                                      │
+│                                                     │
+│ STANDARD mode:                                      │
 │ - Spawn Review Agent (separate sub-agent)           │
-│ - Runs `make check` in both repos                   │
+│                                                     │
+│ INLINE mode:                                        │
+│ - Orchestrator reviews inline (no agent spawn)      │
+│                                                     │
+│ Both modes — same checks are mandatory:             │
+│ - Runs `make check` in affected repo(s)             │
+│ - Runs `make dod` in affected repo(s)               │
 │ - Runs DoD checklist (DEFINITION_OF_DONE.md)        │
 │ - Checks auto-reject triggers (reject immediately   │
 │   if any trigger fires — see DoD)                   │
+│ - Inspects `git diff main` for scope/drift          │
 │ - Auto-fixes small issues (lint, format, logs)      │
 │ - Rejects architectural issues to REVIEW_LOG.md     │
 │ - Checks for flaky tests (FLAKY_TESTS.md protocol)  │
@@ -196,6 +218,61 @@ User Prompt
 
 ---
 
+## 2.1 Execution Mode Selection
+
+At the end of DECOMPOSE (sub-step 1g), the orchestrator selects **INLINE** or **STANDARD** mode. This determines *how* steps 3–6 execute — not whether they execute. All 8 steps always run.
+
+**Risk is determined by what you touch, not by how much you change.**
+
+### INLINE mode — ALL of these must be true:
+
+| Criterion | Rationale |
+|-----------|-----------|
+| No contract/schema change (`schemas.py`, `api.ts`, `CONTRACTS.md` untouched) | Schema changes need cross-repo coordination |
+| No new files or modules created | New modules need architectural review |
+| No IO-boundary module touched (see IO Boundary lists in §7) | IO modules affect security and external integrations |
+| No security/crawling/pipeline module touched | These affect data correctness and abuse prevention |
+| Single-repo only (backend OR frontend, not both) | Cross-repo changes need parallel agents |
+| Changes are: config values, copy text, CSS/styles, or non-logic fixes only | Logic changes need dedicated agent focus |
+
+If **all** criteria are met → **INLINE**. The orchestrator develops and reviews directly.
+
+### STANDARD mode — ANY ONE of these triggers it:
+
+- Schema or contract touched
+- New modules or files created
+- Security, crawling, IO-boundary, or pipeline module touched
+- Both repos need changes
+- Logic or API behavior changes
+- New dependencies added
+- Confidence signal is LOW
+
+### How mode affects each step:
+
+| Step | INLINE | STANDARD |
+|------|--------|----------|
+| 1. DECOMPOSE | Brief inline (decisions only, no sub-step headers) | Full 6-sub-step format |
+| 2. BRANCH | Same | Same |
+| 3. DEVELOP | Orchestrator executes directly (TDD still required) | Spawn dev agent(s) |
+| 4. DOCUMENT | Same (ARCHITECTURE.md, PROGRESS.md, etc.) | Same |
+| 5. DoD | `make check` + `make dod` (same) | Same |
+| 6. REVIEW | Orchestrator reviews inline (run gates + inspect diff) | Spawn review agent |
+| 7. MERGE GATE | Same (`--no-ff`, transaction log, manifest) | Same |
+| 8. REPORT | Same | Same |
+
+### Mode escalation
+
+If during INLINE execution the orchestrator discovers the change unexpectedly touches a sensitive surface (schema, IO module, security, cross-repo), it **must**:
+1. Stop INLINE execution
+2. Add `[MODE_ESCALATION]` label to the CHANGE_LOG entry
+3. Continue in STANDARD mode (spawn appropriate agents)
+
+This is not a failure — it's the process working correctly.
+
+**INLINE mode is single-brain execution, not a quick hack. All gates still apply.**
+
+---
+
 ## 3. DECOMPOSE Details
 
 ### 3.1 Pre-flight Invariant Check
@@ -204,7 +281,7 @@ Before writing any stories, verify the request does not violate these hard const
 
 | Invariant | Source |
 |-----------|--------|
-| Max 12 pages per analysis | PRD §9, Security §10 |
+| Max 20 pages per analysis | PRD §9, Security §10 |
 | No authentication in V1 | PRD §2 (non-goal) |
 | No report history / snapshots in V1 | PRD §2 (non-goal) |
 | No scheduled emails in V1 | PRD §2 (non-goal) |
@@ -553,7 +630,7 @@ For any change that touches URL handling, crawling, or fetching:
 | Redirect cap | Max 3 redirects; `TooManyRedirects` handled explicitly |
 | Max response size | 5 MB per page (prevent memory exhaustion / zip bombs) |
 | robots.txt respect | Disallowed paths not crawled (best effort) |
-| Max pages cap | Hard limit of 12 pages per analysis (enforced + tested) |
+| Max pages cap | Hard limit of 20 pages per analysis (enforced + tested) |
 | Per-domain rate limit | Max 2 concurrent requests per domain |
 | URL scheme whitelist | Only `http://` and `https://` allowed (no `file://`, `ftp://`, `javascript:`) |
 | Timeout enforcement | Per-fetch timeout of 15s, overall pipeline timeout of 90s |
@@ -686,7 +763,7 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 1. Run `make check` in both repos — if fail due to lint/format: auto-fix, re-run;
    if fail due to test/type errors → REJECT (those are dev agent's job)
 2. Run `make dod` in both repos — if fail → REJECT (no fix attempt)
-3. Check 10 auto-reject triggers below — if any fire → REJECT (no fix attempt)
+3. Check 11 auto-reject triggers below — if any fire → REJECT (no fix attempt)
 
 ## PHASE 2: MANUAL CHECKLIST (run only if Phase 1 passes)
 4. Walk DEFINITION_OF_DONE.md [R]-tagged items:
@@ -711,7 +788,7 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
     - If APPROVED: list any warnings, follow-ups, and auto-fixes applied
     - If REJECTED: list specific failing items + which dev agent should fix
 
-## 10 AUTO-REJECT TRIGGERS (deterministic, no fix attempt)
+## 11 AUTO-REJECT TRIGGERS (deterministic, no fix attempt)
 1. Contract changed without contract_version bump + fixture updates
 2. New dependency without ARCHITECTURE.md update
 3. New endpoint/component without tests
@@ -722,6 +799,7 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 8. `make check` fails after review fixes
 9. `make dod` fails after review fixes
 10. CHANGE_LOG.md entry missing
+11. Any of the 8 lifecycle steps was skipped — regardless of execution mode (INLINE or STANDARD)
 
 Plus umbrella rule: reject if ANY DoD checklist item fails.
 
