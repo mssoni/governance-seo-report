@@ -197,7 +197,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 ### CHG-008: Suggest competitors via Google Places API
 
 - **Date**: 2026-02-07
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETE
 - **Labels**: [SCHEMA_CHANGE]
 - **Request**: Auto-suggest competitor businesses on the CompetitorForm using Google Places text search, based on user's business_type and location.
 - **Scope**: backend + frontend
@@ -212,5 +212,5 @@ This separation makes it possible to filter/automate on status without ambiguity
   - Frontend: src/types/api.ts, src/services/api-client.ts, src/hooks/useCompetitorSuggestions.ts (new), src/components/CompetitorForm.tsx, src/pages/ReportPage.tsx, src/components/__tests__/competitor-suggestions.test.tsx (new), CONTRACTS.md, ARCHITECTURE.md, PROGRESS.md
 - **Tests**: +6 backend, +4 frontend (10 total)
 - **Review**: APPROVED (Review Agent — all 11 triggers pass after fixes; make check + make dod green)
-- **DoD**: (pending merge)
+- **DoD**: PASSED
 - **Notes**: Risk: LOW. Confidence: HIGH. Uses existing PlacesClient infrastructure. Review agent fixed: (1) IO layering violation — CompetitorForm was importing useCompetitorSuggestions hook directly, refactored to receive suggestions via props from ReportPage; (2) removed unused waitFor import in test; (3) bumped contract version 1.2.0→1.3.0 and updated all documentation (CONTRACTS.md, ARCHITECTURE.md, PROGRESS.md, CHANGE_MANIFEST.json). Out of scope: changing existing SEO pipeline, modifying Places client.

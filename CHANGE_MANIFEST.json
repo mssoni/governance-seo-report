@@ -1,8 +1,8 @@
 {
   "contract_version": "1.3.0",
   "last_change_id": "CHG-008",
-  "backend_commit": "40e6bb98c87b62ef4f677bc8c93ea01eea3e2da0",
-  "frontend_commit": "3b96e996f72fa16446d5dab947d1e8c72e6dc4c8",
+  "backend_commit": "20dd23935c126412637fd935ced9e5afe78956ae",
+  "frontend_commit": "8cf5234e4a5b77a5921de5404466c95eef026369",
   "compatibility": {
     "backend_min_contract": "1.3.0",
     "frontend_min_contract": "1.3.0"

@@ -79,3 +79,14 @@
 - **frontend_merge_commit:** 3b96e996f72fa16446d5dab947d1e8c72e6dc4c8
 - **manifest_commit:** (workspace root)
 - **notes:** Frontend-only. Moved CompetitorForm from Technical Details tab to Competitive SEO tab. SEO tab always accessible. 1 new test. INLINE mode.
+
+### TX-2026-02-07-008
+
+- **status:** COMPLETED
+- **change_id:** CHG-008
+- **backend_branch:** change/CHG-008-suggest-competitors
+- **frontend_branch:** change/CHG-008-suggest-competitors
+- **backend_merge_commit:** 20dd23935c126412637fd935ced9e5afe78956ae
+- **frontend_merge_commit:** 8cf5234e4a5b77a5921de5404466c95eef026369
+- **manifest_commit:** (workspace root)
+- **notes:** Both repos. New suggest-competitors endpoint (backend) + suggestion cards UI (frontend). Contract 1.2.0→1.3.0. 10 new tests (6 backend + 4 frontend). STANDARD mode.
