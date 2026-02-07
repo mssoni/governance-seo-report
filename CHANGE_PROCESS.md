@@ -22,7 +22,7 @@ Every change follows an **8-step lifecycle**. The assistant acts as a **Change A
 
 The user provides a change request as a natural language prompt. Examples:
 
-- "Add PDF export to the governance report"
+- "Add a loading animation to the report page"
 - "Fix the performance score showing NaN when PSI fails"
 - "Add email capture CTA before showing the SEO report"
 
@@ -204,16 +204,16 @@ Before writing any stories, verify the request does not violate these hard const
 
 | Invariant | Source |
 |-----------|--------|
-| Max 12 pages per analysis | PRD §9, Security §9 |
+| Max 12 pages per analysis | PRD §9, Security §10 |
 | No authentication in V1 | PRD §2 (non-goal) |
 | No report history / snapshots in V1 | PRD §2 (non-goal) |
 | No scheduled emails in V1 | PRD §2 (non-goal) |
 | No GA/GSC connection in V1 | PRD §2 (non-goal) |
 | No SEO execution or rankings promises | PRD §2 (non-goal) |
 | No PDF export (web-only, print-friendly OK) | PRD §2 (non-goal) |
-| No permanent state without rollback path | Sec 15 (Data Migration) |
+| No permanent state without rollback path | §16 (Data Migration) |
 | Deterministic reasoning only — no free-form LLM "analysis" | PRD §6 |
-| No live crawling of disallowed paths (robots.txt) | Security §9 |
+| No live crawling of disallowed paths (robots.txt) | Security §10 |
 
 If a request touches any of these, escalate as `NEEDS_PRODUCT_DECISION` with:
 - Which invariant is affected
@@ -419,12 +419,14 @@ This prevents duplicate IDs when multiple changes happen in sequence.
 | `app/crawlers/sitemap_parser.py` | Fetch/parse sitemaps |
 | `app/services/psi_client.py` | PageSpeed Insights API |
 | `app/services/places_client.py` | Google Places API |
-| `app/services/gemini_summarizer.py` | Gemini API |
+| `app/reasoning/gemini_summarizer.py` | Gemini API (hybrid: lives in reasoning/ but does IO) |
 | `app/services/competitor_analyzer.py` | Orchestrates IO calls |
 | `app/services/pipeline.py` | Orchestrates IO calls |
 | `app/services/seo_pipeline.py` | Orchestrates IO calls |
 
 **Everything else (detectors, templates, issue builders, gap analyzers, action plan generators) MUST accept data as function arguments. No HTTP calls. No file reads. Pure functions.**
+
+**Note on `gemini_summarizer.py`:** This module lives in `reasoning/` but performs external API calls (Gemini). It is classified as a **hybrid IO module** — exempt from BLE001 and bare-except checks, but subject to IO testing rules (mock all external calls). It stays in `reasoning/` because its purpose is rephrasing, not fetching. The layering test (`test_layering.py`) does not flag it because `google.generativeai` is not in the forbidden HTTP library list.
 
 ### Frontend
 
@@ -681,7 +683,8 @@ BACKEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/backend
 FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 
 ## PHASE 1: AUTOMATED GATES (run first, reject immediately on failure)
-1. Run `make check` in both repos — if fail: try small fix, re-run; if still fail → REJECT
+1. Run `make check` in both repos — if fail due to lint/format: auto-fix, re-run;
+   if fail due to test/type errors → REJECT (those are dev agent's job)
 2. Run `make dod` in both repos — if fail → REJECT (no fix attempt)
 3. Check 10 auto-reject triggers below — if any fire → REJECT (no fix attempt)
 
@@ -695,8 +698,9 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 5. Review code quality: schema alignment, copy tone, accessibility
 6. Check for flaky tests (FLAKY_TESTS.md protocol)
 
-## PHASE 3: FIX OR REJECT
-7. Auto-fix small issues (lint, format, missing log lines, missing doc entries)
+## PHASE 3: FIX OR REJECT (code-level issues found during Phase 2 review)
+7. Auto-fix small code issues: missing log_event() calls, missing doc entries,
+   missing ARCHITECTURE.md lines, minor test gaps
    - Commit fixes as: fix(CHG-NNN): [what was fixed per review]
    - Re-run `make check` + `make dod` after fixes
 8. If architectural issue found → REJECT to REVIEW_LOG.md with explanation
@@ -704,7 +708,7 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 ## PHASE 4: REPORT
 9. Append all findings to REVIEW_LOG.md
 10. Report to orchestrator: APPROVED or REJECTED with reasons
-    - If APPROVED: list any warnings or follow-ups
+    - If APPROVED: list any warnings, follow-ups, and auto-fixes applied
     - If REJECTED: list specific failing items + which dev agent should fix
 
 ## 10 AUTO-REJECT TRIGGERS (deterministic, no fix attempt)

@@ -24,7 +24,7 @@ Each entry follows this format:
   - Backend: list of files
   - Frontend: list of files
 - **Tests**: +N added, M modified
-- **Review**: APPROVED | APPROVED_WITH_FIXES | REJECTED
+- **Review**: APPROVED | REJECTED
 - **DoD**: PASSED (`make dod` green) | FAILED (with failing items)
 - **Notes**: any follow-ups or warnings
 ```
