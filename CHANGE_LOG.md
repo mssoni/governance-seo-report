@@ -173,3 +173,23 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (INLINE — orchestrator review, all 11 triggers pass, make check + make dod green)
 - **DoD**: PASSED
 - **Notes**: Risk: LOW. Confidence: HIGH. No schema change. Out of scope: frontend changes, contract bump, new models. TDD confirmed (import error before implementation). Narrative never uses technical jargon — enforced by test with 27 banned terms.
+
+### CHG-007: Move CompetitorForm to SEO tab
+
+- **Date**: 2026-02-07
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Move the CompetitorForm (competitor URL inputs) from the Technical Details tab to the Competitive SEO Report tab.
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-007-move-competitor-form
+- **Contract Version**: (unchanged, 1.2.0)
+- **Stories**:
+  - [x] Move CompetitorForm, SEO polling progress, and SEO error indicators from technical tab to seo tab
+- **Files Changed**:
+  - `frontend/src/pages/ReportPage.tsx` — moved CompetitorForm + SEO polling/error to seo tab; seoEnabled always true
+  - `frontend/src/pages/__tests__/report-page.test.tsx` — 1 new test verifying form placement
+- **Tests**: 1 added. Total: 146 frontend tests
+- **Review**: APPROVED (INLINE — orchestrator review, all 11 triggers pass, make check + make dod green)
+- **DoD**: PASSED
+- **Notes**: Risk: LOW. Confidence: HIGH. UI layout change only. SEO tab now always accessible (not locked behind completed report). Out of scope: backend, schema, new components.

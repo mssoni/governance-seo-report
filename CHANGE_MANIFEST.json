@@ -1,12 +1,12 @@
 {
   "contract_version": "1.2.0",
-  "last_change_id": "CHG-006",
+  "last_change_id": "CHG-007",
   "backend_commit": "40e6bb98c87b62ef4f677bc8c93ea01eea3e2da0",
-  "frontend_commit": "4294761d92c705d7e798b5dee95c5c845acf1519",
+  "frontend_commit": "3b96e996f72fa16446d5dab947d1e8c72e6dc4c8",
   "compatibility": {
     "backend_min_contract": "1.2.0",
     "frontend_min_contract": "1.2.0"
   },
   "updated_at": "2026-02-07",
-  "notes": "CHG-006 merged. Executive narrative rewritten with business-goal framing. No schema change. 277 backend tests."
+  "notes": "CHG-007 merged. CompetitorForm moved to SEO tab. 146 frontend tests, 277 backend tests."
 }

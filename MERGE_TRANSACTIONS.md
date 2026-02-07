@@ -70,3 +70,12 @@
 - **frontend_merge_commit:** n/a
 - **manifest_commit:** (workspace root)
 - **notes:** Backend-only. Rewrote executive narrative to frame around predicted business goals. New module business_goals.py. No schema change. 25 new tests. INLINE mode.
+
+### TX-2026-02-07-007 — CHG-007
+- **status:** COMPLETED
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-007-move-competitor-form
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** 3b96e996f72fa16446d5dab947d1e8c72e6dc4c8
+- **manifest_commit:** (workspace root)
+- **notes:** Frontend-only. Moved CompetitorForm from Technical Details tab to Competitive SEO tab. SEO tab always accessible. 1 new test. INLINE mode.
