@@ -151,7 +151,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 ### CHG-006: Business-Goal-Aware Executive Narrative
 
 - **Date**: 2026-02-07
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETE
 - **Labels**: (none)
 - **Request**: Rewrite executive narrative to frame findings around predicted business goals (e.g., "more patients" for clinics) instead of citing technical issue titles. Never mention technical jargon — only business outcomes on/off track.
 - **Scope**: backend-only
@@ -261,3 +261,29 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (INLINE)
 - **DoD**: PASSED
 - **Notes**: Root cause — CHG-006 changed narrative generation but did not update golden fixtures. New drift guard test prevents recurrence. New DoD section "Golden Fixtures" added.
+
+### CHG-011: Improve competitor suggestion relevance + Google review card
+
+- **Date**: 2026-02-07
+- **Status**: COMPLETE
+- **Labels**: [SCHEMA_CHANGE]
+- **Request**: Competitor suggestions for skinsureclinic.com returned generic medical clinics instead of dermatology clinics. Need more relevant competitors based on actual business specialty, area-aware search, and a Google review card for the user's clinic.
+- **Scope**: both
+- **Mode**: STANDARD
+- **Branch**: change/CHG-011-improve-competitor-suggestions
+- **Contract Version**: v1.3.0 → v1.4.0 (additive — new `user_place` field on SuggestCompetitorsResponse)
+- **Stories**:
+  - [x] Backend: Two-step search — find user's place on Google Places by domain → extract specific types + area → search for competitors with those types near that area
+  - [x] Backend: Add `user_place` to `SuggestCompetitorsResponse` schema
+  - [x] Backend: Add `websiteUri` to PlacesClient field mask + `website_url` to PlaceResult
+  - [x] Backend: Filter out user's own place from competitor results (by place_id + domain)
+  - [x] Frontend: Pass `websiteUrl` to `useCompetitorSuggestions` hook → API
+  - [x] Frontend: Display Google Business Profile review card for user's clinic
+  - [x] Frontend: Update types, api-client, hook for new response shape
+- **Files Changed**:
+  - Backend: app/api/suggest.py (rewritten), app/models/schemas.py, app/services/places_client.py, tests/test_suggest_competitors.py (rewritten, 22 tests), CONTRACTS.md, ARCHITECTURE.md
+  - Frontend: src/types/api.ts, src/services/api-client.ts, src/hooks/useCompetitorSuggestions.ts, src/components/CompetitorForm.tsx, src/pages/ReportPage.tsx, src/components/__tests__/competitor-suggestions.test.tsx (8 tests), CONTRACTS.md, ARCHITECTURE.md
+- **Tests**: +16 backend (309 total), +4 frontend (154 total)
+- **Review**: APPROVED (STANDARD — orchestrator review, all checks green)
+- **DoD**: PASSED
+- **Notes**: Risk: MEDIUM (IO module + schema change). Confidence: HIGH. Root cause: suggest endpoint mapped "clinic" → "medical clinic" generically instead of using the website's actual Google Place types (e.g., "dermatologist"). Two-step search now: (1) find user's business by domain, (2) use its specific types for competitor search. Out of scope: changing PlacesClient internals, modifying SEO pipeline, adding new API endpoints.
