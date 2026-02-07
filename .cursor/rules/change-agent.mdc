@@ -1,0 +1,39 @@
+---
+description: Change Agent orchestration process — activates when the user requests a change, feature, fix, or enhancement to the application
+alwaysApply: true
+---
+
+# Change Agent Process
+
+When the user describes a change request (new feature, bug fix, enhancement, refactor), follow the 7-step lifecycle in `CHANGE_PROCESS.md`.
+
+## Trigger Detection
+
+Activate this process when the user's message implies a change to the codebase:
+- "Add ...", "Fix ...", "Change ...", "Update ...", "Remove ...", "Refactor ..."
+- "I want to ...", "Can you ...", "We need ..."
+- Bug reports, feature requests, UI tweaks, API changes
+
+## Workflow
+
+1. Read `CHANGE_PROCESS.md` for the full lifecycle
+2. Read `CHANGE_LOG.md` to determine the next Change ID (CHG-NNN)
+3. Read `backend/ARCHITECTURE.md` and `frontend/ARCHITECTURE.md` for current state
+4. Read `backend/CONTRACTS.md` if the change may affect API schemas
+5. Decompose the request into stories with acceptance criteria
+6. Log the change in `CHANGE_LOG.md` as IN_PROGRESS
+7. Create feature branches: `change/chg-nnn-short-description`
+8. Spawn dev agents in parallel using the Task tool (backend + frontend, or just one)
+9. After dev agents complete, spawn a review agent
+10. After review passes, merge feature branches to main
+11. Update `CHANGE_LOG.md` status to COMPLETE
+12. Report summary to user
+
+## Rules
+
+- Never ask the user for permission to proceed — execute autonomously
+- Always use TDD (test first, then implement)
+- Always run `make check` before and after changes
+- Always update documentation (ARCHITECTURE.md, PROGRESS.md)
+- Use Contract-First if any API schema changes
+- Follow the git branching convention: `change/chg-nnn-short-description`
