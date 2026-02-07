@@ -1,4 +1,4 @@
-# Change Process v2.2
+# Change Process v2.3
 
 > How changes are requested, developed, reviewed, and merged after V1 is complete.
 > v2.0: merge safety, contract versioning, IO boundaries, flaky test protocol, deterministic rejection.
@@ -7,6 +7,8 @@
 > v2.2: hard-gate vs heuristic labeling, merge strategy enforcement (`--no-ff`, no squash),
 > merge transaction log, structured escalation templates, centralized observability helper,
 > response size cap, redirect re-validation, data migration placeholder rules.
+> v2.3: intent→outcome framing, risk classification, pre-flight invariant checks, mandatory
+> out-of-scope, global default behavior rules, confidence signal, "unlocks later" field.
 
 ## Overview
 
@@ -37,15 +39,52 @@ User Prompt
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
-│ Step 1: DECOMPOSE                                   │
-│ - Read ARCHITECTURE.md (both repos)                 │
-│ - Read CONTRACTS.md + CHANGE_MANIFEST.json          │
-│ - Identify affected modules/files                   │
-│ - Create user stories with acceptance criteria      │
-│ - If AC can't be objective → NEEDS_PRODUCT_DECISION │
-│ - Determine: backend-only, frontend-only, or both   │
-│ - Assign Change ID via ./scripts/new_change_id.sh   │
-│ - Write stories to CHANGE_LOG.md                    │
+│ Step 1: DECOMPOSE (6 sub-steps)                     │
+│                                                     │
+│ 1a. CONTEXT GATHER                                  │
+│   - Read ARCHITECTURE.md (both repos)               │
+│   - Read CONTRACTS.md + CHANGE_MANIFEST.json        │
+│   - Identify affected modules/files                 │
+│   - Determine: backend-only, frontend-only, or both │
+│                                                     │
+│ 1b. PRE-FLIGHT INVARIANT CHECK (reject early)       │
+│   - Does this violate a core invariant?             │
+│     (max 12 pages, no live crawl without consent,   │
+│      no state without rollback, no auth in V1)      │
+│   - Does this contradict a V1 non-goal?             │
+│     (no auth, no snapshots, no scheduled emails,    │
+│      no GA/GSC, no rankings promises)               │
+│   - Does this create permanent state without a      │
+│     rollback path?                                  │
+│   → If yes: NEEDS_PRODUCT_DECISION before stories   │
+│                                                     │
+│ 1c. OUTCOME FRAMING (silent unless risky)           │
+│   - What metric does this affect?                   │
+│     (conversion, reliability, speed, trust)         │
+│   - Is this request a means or an end?              │
+│   - Is there a cheaper/safer way to get the same    │
+│     outcome?                                        │
+│   → Escalate only if: the requested change          │
+│     optimizes the wrong metric or adds complexity   │
+│     with low outcome impact                         │
+│                                                     │
+│ 1d. STORY FORMATION                                 │
+│   - Create stories with acceptance criteria         │
+│   - If AC can't be objective →                      │
+│     NEEDS_PRODUCT_DECISION                          │
+│   - Assign Risk Level: LOW / MEDIUM / HIGH          │
+│   - Require at least 1 Out of Scope item per story  │
+│   - Optionally add "Unlocks Later" field            │
+│                                                     │
+│ 1e. CONFIDENCE SIGNAL                               │
+│   - Rate: HIGH / MEDIUM / LOW                       │
+│   - If LOW: bias toward smaller stories,            │
+│     conservative approach, more review iterations   │
+│                                                     │
+│ 1f. LOG + ALLOCATE                                  │
+│   - Assign Change ID via ./scripts/new_change_id.sh │
+│   - Write stories to CHANGE_LOG.md                  │
+│   - Report decomposition to user (brief summary)    │
 └─────────────────────────────────────────────────────┘
     │
     ▼
@@ -157,7 +196,137 @@ User Prompt
 
 ---
 
-## 3. Naming Convention (Case-Stable, One Format Everywhere)
+## 3. DECOMPOSE Details
+
+### 3.1 Pre-flight Invariant Check
+
+Before writing any stories, verify the request does not violate these hard constraints:
+
+| Invariant | Source |
+|-----------|--------|
+| Max 12 pages per analysis | PRD §9, Security §9 |
+| No authentication in V1 | PRD §2 (non-goal) |
+| No report history / snapshots in V1 | PRD §2 (non-goal) |
+| No scheduled emails in V1 | PRD §2 (non-goal) |
+| No GA/GSC connection in V1 | PRD §2 (non-goal) |
+| No SEO execution or rankings promises | PRD §2 (non-goal) |
+| No PDF export (web-only, print-friendly OK) | PRD §2 (non-goal) |
+| No permanent state without rollback path | Sec 15 (Data Migration) |
+| Deterministic reasoning only — no free-form LLM "analysis" | PRD §6 |
+| No live crawling of disallowed paths (robots.txt) | Security §9 |
+
+If a request touches any of these, escalate as `NEEDS_PRODUCT_DECISION` with:
+- Which invariant is affected
+- Whether it should be moved to a future phase
+- Recommended approach if the invariant should be relaxed
+
+### 3.2 Outcome Framing
+
+This step runs silently. The orchestrator asks internally:
+
+1. **What metric does this affect?**
+   Map to one of the success metrics from the PRD:
+   - Report completion rate (≥ 80%)
+   - Time-to-report (p50 < 45s, p90 < 120s)
+   - Saved/Shared clicks (≥ 10%)
+   - "Request help" CTA click (≥ 3-5%)
+   - SEO report completion after competitor step (≥ 50%)
+
+2. **Is this request a means or an end?**
+   - "Add a retry button" → means (the end is reliability)
+   - "Reduce report failures" → end (retry is one possible means)
+   - If it's a means: verify the end is correct before building the means
+
+3. **Is there a cheaper/safer way to reach the same outcome?**
+   - Can this be solved with config instead of code?
+   - Can this be solved with copy changes instead of new UI?
+   - Can this be solved in one repo instead of both?
+
+**Escalate only if:** the requested change optimizes the wrong metric, or adds complexity with low outcome impact. Otherwise, proceed silently.
+
+### 3.3 Story Template
+
+```markdown
+### Story: [Title]
+**Change ID:** CHG-NNN
+**Repo:** backend / frontend / both
+**Type:** feature / fix / refactor
+
+**Risk Level:** LOW | MEDIUM | HIGH
+  - LOW: UI-only, copy, non-critical logic
+  - MEDIUM: API changes, error handling, retry logic, new components
+  - HIGH: crawling, security, billing, data correctness, external API integration
+
+**Description:** [1-2 sentences of what and why]
+
+**Acceptance Criteria:**
+- [ ] [Observable, testable outcome 1]
+- [ ] [Observable, testable outcome 2]
+- [ ] [Observable, testable outcome 3]
+
+**Out of Scope:** (mandatory — at least 1 item)
+- [What this story does NOT do]
+- [Boundary that prevents scope creep]
+
+**Contract Impact:** None / Additive (MINOR) / Breaking (MAJOR)
+**Security Impact:** None / Needs SSRF tests / Needs redirect tests
+**Files Likely Touched:** [list based on ARCHITECTURE.md]
+
+**Unlocks Later:** (optional)
+- [Future capability this enables]
+- [Effort this reduces for a future change]
+```
+
+**Rules:**
+- Every acceptance criterion must be testable — if you can't write a test for it, it's too vague
+- At least 1 "Out of Scope" item is mandatory. Review Agent rejects stories missing it.
+- "Unlocks Later" is optional but encouraged — it creates institutional memory
+
+### 3.4 Risk Level Effects
+
+| Risk Level | Review Strictness | Approach Bias | Rollback Readiness |
+|------------|------------------|---------------|-------------------|
+| **LOW** | Standard review | Ship fast, iterate | Standard (`git revert`) |
+| **MEDIUM** | Full DoD + extra schema/contract review | Prefer additive changes | Verify revert path before merge |
+| **HIGH** | Full DoD + security tests + manual spot-check | Be conservative, smaller stories | Test rollback scenario before merge |
+
+### 3.5 Confidence Signal
+
+Before spawning agents, the orchestrator outputs:
+
+```
+Confidence: HIGH | MEDIUM | LOW
+Reason: [1-line explanation]
+```
+
+| Confidence | Meaning | Behavior Adjustment |
+|-----------|---------|-------------------|
+| **HIGH** | Clear AC, known patterns, LOW/MEDIUM risk | Execute normally |
+| **MEDIUM** | Some AC ambiguity, or MEDIUM risk, or unfamiliar module | Prefer smaller stories, expect 1 review cycle |
+| **LOW** | Unclear scope, HIGH risk, or novel territory | Split into smallest possible stories, expect 2+ review cycles, bias toward conservative approach |
+
+### 3.6 Global Default Behavior Rules
+
+When ambiguity arises during decomposition or development, apply these defaults:
+
+| Principle | Default |
+|-----------|---------|
+| Additive vs breaking | **Prefer additive** — add new fields/endpoints, don't rename/remove |
+| Readability vs novelty | **Prefer readability** — clear copy over clever UI |
+| Safety vs speed | **Prefer safety** — validate inputs, cap resources, fail gracefully |
+| Explicit vs automatic | **Prefer explicit user action** — show the user, let them decide |
+| Simple vs complete | **Prefer simple first** — ship the 80% case, iterate on edge cases |
+| One repo vs both | **Prefer one repo** — if the change can be contained, contain it |
+
+These defaults are referenced in the structured escalation template:
+
+```
+**Default (per global defaults):** [Option X] — [which principle applies]
+```
+
+---
+
+## 4. Naming Convention (Case-Stable, One Format Everywhere)
 
 | Item | Format | Example |
 |------|--------|---------|
@@ -173,7 +342,7 @@ User Prompt
 
 ---
 
-## 4. Contract Versioning
+## 5. Contract Versioning
 
 Contracts use semantic versioning: `MAJOR.MINOR.PATCH`
 
@@ -197,7 +366,7 @@ When bumping:
 
 ---
 
-## 5. Cross-Repo Compatibility Pin (CHANGE_MANIFEST.json)
+## 6. Cross-Repo Compatibility Pin (CHANGE_MANIFEST.json)
 
 Both repos reference a shared manifest at the workspace root:
 
@@ -239,7 +408,7 @@ This prevents duplicate IDs when multiple changes happen in sequence.
 
 ---
 
-## 6. IO Boundary Rule
+## 7. IO Boundary Rule
 
 **Hard rule:** Only designated modules may perform HTTP, Playwright, or external API calls.
 
@@ -296,7 +465,7 @@ Non-IO modules cannot import IO modules, even transitively:
 
 ---
 
-## 7. Kill Switch (Attempt Budget)
+## 8. Kill Switch (Attempt Budget)
 
 The kill switch is framed as an **attempt budget**, not a wall-clock timer (agents can't reliably track time).
 
@@ -324,7 +493,7 @@ The kill switch is framed as an **attempt budget**, not a wall-clock timer (agen
 
 ---
 
-## 8. Observability Requirements
+## 9. Observability Requirements
 
 ### Centralized Helper
 
@@ -370,7 +539,7 @@ Every report generation job gets a `request_id` (the `job_id` from `JobManager`)
 
 ---
 
-## 9. Security Constraints (Required Tests)
+## 10. Security Constraints (Required Tests)
 
 For any change that touches URL handling, crawling, or fetching:
 
@@ -419,7 +588,7 @@ These tests must exist and pass. The Review Agent rejects if any are missing whe
 
 ---
 
-## 10. Escalation Paths
+## 11. Escalation Paths
 
 Not all requests can be handled autonomously. Escalation paths use **Labels** (not Status) in `CHANGE_LOG.md`. A change can be `IN_PROGRESS` with a `NEEDS_PRODUCT_DECISION` label.
 
@@ -463,7 +632,7 @@ Add this **label** when:
 
 ---
 
-## 11. Agent Prompt Templates
+## 12. Agent Prompt Templates
 
 ### Backend Dev Agent
 
@@ -560,7 +729,7 @@ Plus umbrella rule: reject if ANY DoD checklist item fails.
 
 ---
 
-## 12. Merge Strategy
+## 13. Merge Strategy
 
 **Always merge commit (`--no-ff`). No squash merges. No rebases onto main.**
 
@@ -574,7 +743,7 @@ This is enforced in the merge gate. If an agent uses `--squash` or `rebase`, the
 
 ---
 
-## 13. Merge Transaction Log
+## 14. Merge Transaction Log
 
 Every cross-repo merge is logged in `MERGE_TRANSACTIONS.md` (workspace root, append-only).
 
@@ -600,7 +769,7 @@ Every cross-repo merge is logged in `MERGE_TRANSACTIONS.md` (workspace root, app
 
 ---
 
-## 14. Rollback
+## 15. Rollback
 
 If a change breaks `main` after merge:
 1. `git revert` the merge commit in the affected repo(s)
@@ -621,7 +790,7 @@ If backend merged but frontend merge fails (or vice versa):
 
 ---
 
-## 15. Data Migration Rules (Future-Proofing)
+## 16. Data Migration Rules (Future-Proofing)
 
 V1 is stateless, but when persistence is added (database, cache, queue), these rules apply:
 

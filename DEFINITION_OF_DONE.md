@@ -48,6 +48,7 @@
 - [ ] No drive-by refactors of unrelated code **[R]**
 - [ ] No new dependencies without `ARCHITECTURE.md` documentation **[R]**
 - [ ] Commit messages follow format: `feat(CHG-NNN): <description>` **[R]**
+- [ ] Every story has at least 1 "Out of Scope" item **[R]**
 
 ### Security (if URL/crawling changes)
 
