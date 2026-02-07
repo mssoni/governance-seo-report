@@ -1,8 +1,9 @@
-# Change Process v2.0
+# Change Process v2.1
 
 > How changes are requested, developed, reviewed, and merged after V1 is complete.
-> Revised based on swarm reliability review — addresses merge safety, contract versioning,
-> IO boundaries, flaky test protocol, and deterministic rejection.
+> v2.0: merge safety, contract versioning, IO boundaries, flaky test protocol, deterministic rejection.
+> v2.1: automated DoD enforcement (`make dod`), atomic merge protocol, CHG ID allocation script,
+> DNS rebinding protection, attempt-budget kill switch, layering tests, compatibility matrix.
 
 ## Overview
 
@@ -446,23 +447,25 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 1. Run `make check` in both repos
 2. Run `make dod` in both repos — reject if any check fails
 3. Run DEFINITION_OF_DONE.md manual checklist — reject if any item fails
-3. Check auto-reject triggers — reject immediately if any fire
-4. Review code: schema alignment, copy tone, accessibility, test coverage
-5. Check IO boundary: no HTTP in detector/analyzer/template modules
-6. Check for flaky tests (FLAKY_TESTS.md protocol)
-7. Auto-fix small issues (lint, format, missing logs)
-8. Append findings to REVIEW_LOG.md
-9. Report: APPROVED or REJECTED with reasons
+4. Check auto-reject triggers — reject immediately if any fire
+5. Review code: schema alignment, copy tone, accessibility, test coverage
+6. Check IO boundary + layering: no HTTP in pure modules, no IO module imports
+7. Check for flaky tests (FLAKY_TESTS.md protocol)
+8. Auto-fix small issues (lint, format, missing logs)
+9. Append findings to REVIEW_LOG.md
+10. Report: APPROVED or REJECTED with reasons
 
 ## AUTO-REJECT TRIGGERS (immediate reject, no fix attempt)
 1. Contract changed without contract_version bump + fixture updates
 2. New dependency without ARCHITECTURE.md update
-3. New endpoint without tests
+3. New endpoint/component without tests
 4. Scope drift (diff touches files outside change scope)
 5. Live network call in test files
 6. HTTP/Playwright import in non-IO module
-7. make check fails after review fixes
-8. CHANGE_LOG.md entry missing
+7. Non-IO module importing an IO module (layering violation)
+8. `make check` fails after review fixes
+9. `make dod` fails after review fixes
+10. CHANGE_LOG.md entry missing
 
 ## IMPORTANT
 You do NOT merge. You report APPROVED/REJECTED status.
