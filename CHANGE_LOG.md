@@ -11,10 +11,11 @@ Each entry follows this format:
 ### CHG-NNN: <Short Title>
 
 - **Date**: YYYY-MM-DD
-- **Status**: IN_PROGRESS | COMPLETE | REVERTED
+- **Status**: IN_PROGRESS | COMPLETE | REVERTED | NEEDS_PRODUCT_DECISION | NEEDS_ARCHITECTURE_REVIEW
 - **Request**: <User's original prompt>
 - **Scope**: backend-only | frontend-only | both
-- **Branch**: change/chg-nnn-short-description
+- **Branch**: change/CHG-NNN-short-description
+- **Contract Version**: v1.0.0 → v1.1.0 (if changed)
 - **Stories**:
   - [ ] Story 1: description (backend/frontend)
   - [ ] Story 2: description (backend/frontend)
@@ -23,6 +24,7 @@ Each entry follows this format:
   - Frontend: list of files
 - **Tests**: +N added, M modified
 - **Review**: APPROVED | APPROVED_WITH_FIXES | REJECTED
+- **DoD**: PASSED | FAILED (with failing items)
 - **Notes**: any follow-ups or warnings
 ```
 

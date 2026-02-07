@@ -1,0 +1,8 @@
+{
+  "contract_version": "1.0.0",
+  "last_change_id": null,
+  "backend_commit": null,
+  "frontend_commit": null,
+  "updated_at": "2026-02-07",
+  "notes": "V1 baseline. All phases complete. 335 tests passing."
+}

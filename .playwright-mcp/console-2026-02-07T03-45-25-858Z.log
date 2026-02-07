@@ -1,0 +1,2 @@
+[   98821ms] [ERROR] WebSocket connection to 'ws://localhost:5174/?token=wKkX4e47QFZQ' failed:  @ http://localhost:5174/@vite/client:744
+[  101407ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/api/report/status/b3f32348-d00d-4bd1-80a0-37e060bd76dc:0
