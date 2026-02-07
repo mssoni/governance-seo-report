@@ -1,12 +1,12 @@
 {
   "contract_version": "1.3.0",
-  "last_change_id": "CHG-009",
-  "backend_commit": "753d7b28108c76b2100caf3da7fed8bb5ddb41e7",
-  "frontend_commit": "8cf5234e4a5b77a5921de5404466c95eef026369",
+  "last_change_id": "CHG-010",
+  "backend_commit": "a20049ab19e7ee714be7279ac6621973ce2a6171",
+  "frontend_commit": "37f5aefcd1a524d8107583d250b9b47db7812280",
   "compatibility": {
     "backend_min_contract": "1.3.0",
     "frontend_min_contract": "1.3.0"
   },
   "updated_at": "2026-02-07",
-  "notes": "CHG-009: Demo mode for instant report generation. Backend-only, no contract change."
+  "notes": "CHG-010: Fix golden fixture narrative drift — business language, drift guard test."
 }

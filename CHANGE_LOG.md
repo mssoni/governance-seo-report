@@ -236,3 +236,28 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (INLINE — orchestrator review)
 - **DoD**: PASSED
 - **Notes**: Risk: LOW. Confidence: HIGH. Production safety: demo_mode defaults to False. No schema/contract change. Out of scope: frontend, production deployment.
+
+### CHG-010: Fix golden fixture narrative drift
+
+- **Date**: 2026-02-07
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Golden fixture `executive_narrative` was stale (pre-CHG-006 technical language). Update to match current business-goal-aware narrative format. Add drift guard test and process rule.
+- **Scope**: backend + frontend
+- **Mode**: INLINE
+- **Branch**: change/CHG-010-fix-fixture-drift
+- **Contract Version**: unchanged (1.3.0)
+- **Stories**:
+  - [x] Update backend fixture narrative to business-goal language
+  - [x] Update frontend fixture narrative to match
+  - [x] Add drift guard test (jargon ban list on fixture narrative)
+  - [x] Update frontend test assertions for new narrative text
+  - [x] Add "Golden Fixtures" section to DEFINITION_OF_DONE.md
+- **Files Changed**:
+  - Backend: tests/fixtures/reports/governance-report.json, tests/test_business_narrative.py
+  - Frontend: src/mocks/golden/governance-report.json, src/components/report/__tests__/executive-story.test.tsx, src/pages/__tests__/report-page.test.tsx
+  - Process: DEFINITION_OF_DONE.md
+- **Tests**: +1 new drift guard test (293 backend total)
+- **Review**: APPROVED (INLINE)
+- **DoD**: PASSED
+- **Notes**: Root cause — CHG-006 changed narrative generation but did not update golden fixtures. New drift guard test prevents recurrence. New DoD section "Golden Fixtures" added.

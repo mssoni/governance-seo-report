@@ -35,6 +35,13 @@
 - [ ] `CHANGE_MANIFEST.json` updated: `contract_version` + `compatibility` if breaking **[R]**
 - [ ] `make contract-check` passes (version sync verified) **[H]**
 
+### Golden Fixtures (if pipeline output format changes)
+
+- [ ] Golden fixture content reflects the CURRENT pipeline output format **[R]**
+- [ ] Fixture narrative uses the same language style as the current narrative generator (no stale text) **[H]** _(test_business_narrative.py drift guard)_
+- [ ] Both backend (`tests/fixtures/reports/`) and frontend (`src/mocks/golden/`) fixtures updated **[R]**
+- [ ] Demo mode (`DEMO_MODE=true`) returns output consistent with real pipeline behavior **[R]**
+
 ### Documentation
 
 - [ ] `ARCHITECTURE.md` updated (new files, changed interfaces, dependency changes) **[R]**

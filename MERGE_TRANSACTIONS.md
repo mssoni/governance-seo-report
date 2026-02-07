@@ -101,3 +101,14 @@
 - **frontend_merge_commit:** n/a
 - **manifest_commit:** (workspace root)
 - **notes:** Backend-only. Demo mode for instant report generation. 9 new tests. INLINE mode.
+
+### TX-2026-02-07-010
+
+- **status:** COMPLETED
+- **change_id:** CHG-010
+- **backend_branch:** change/CHG-010-fix-fixture-drift
+- **frontend_branch:** change/CHG-010-fix-fixture-drift
+- **backend_merge_commit:** a20049ab19e7ee714be7279ac6621973ce2a6171
+- **frontend_merge_commit:** 37f5aefcd1a524d8107583d250b9b47db7812280
+- **manifest_commit:** (workspace root)
+- **notes:** Both repos. Fix golden fixture narrative drift. 1 new drift guard test. Process update: DEFINITION_OF_DONE.md. INLINE mode.
