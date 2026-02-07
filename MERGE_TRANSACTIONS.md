@@ -90,3 +90,14 @@
 - **frontend_merge_commit:** 8cf5234e4a5b77a5921de5404466c95eef026369
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. New suggest-competitors endpoint (backend) + suggestion cards UI (frontend). Contract 1.2.0→1.3.0. 10 new tests (6 backend + 4 frontend). STANDARD mode.
+
+### TX-2026-02-07-009
+
+- **status:** COMPLETED
+- **change_id:** CHG-009
+- **backend_branch:** change/CHG-009-demo-mode
+- **frontend_branch:** n/a
+- **backend_merge_commit:** 753d7b28108c76b2100caf3da7fed8bb5ddb41e7
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Demo mode for instant report generation. 9 new tests. INLINE mode.

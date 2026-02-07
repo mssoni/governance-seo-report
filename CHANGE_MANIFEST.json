@@ -1,12 +1,12 @@
 {
   "contract_version": "1.3.0",
-  "last_change_id": "CHG-008",
-  "backend_commit": "20dd23935c126412637fd935ced9e5afe78956ae",
+  "last_change_id": "CHG-009",
+  "backend_commit": "753d7b28108c76b2100caf3da7fed8bb5ddb41e7",
   "frontend_commit": "8cf5234e4a5b77a5921de5404466c95eef026369",
   "compatibility": {
     "backend_min_contract": "1.3.0",
     "frontend_min_contract": "1.3.0"
   },
   "updated_at": "2026-02-07",
-  "notes": "CHG-008: Suggest Competitors via Google Places API. Contract bumped to 1.3.0 (new endpoint + models)."
+  "notes": "CHG-009: Demo mode for instant report generation. Backend-only, no contract change."
 }

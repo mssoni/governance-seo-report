@@ -214,3 +214,25 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (Review Agent — all 11 triggers pass after fixes; make check + make dod green)
 - **DoD**: PASSED
 - **Notes**: Risk: LOW. Confidence: HIGH. Uses existing PlacesClient infrastructure. Review agent fixed: (1) IO layering violation — CompetitorForm was importing useCompetitorSuggestions hook directly, refactored to receive suggestions via props from ReportPage; (2) removed unused waitFor import in test; (3) bumped contract version 1.2.0→1.3.0 and updated all documentation (CONTRACTS.md, ARCHITECTURE.md, PROGRESS.md, CHANGE_MANIFEST.json). Out of scope: changing existing SEO pipeline, modifying Places client.
+
+### CHG-009: Demo mode for instant report generation
+
+- **Date**: 2026-02-07
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Add DEMO_MODE env variable that skips all real crawling/PSI/Gemini calls and returns golden fixture data instantly, for local development and testing.
+- **Scope**: backend only
+- **Mode**: INLINE
+- **Branch**: change/CHG-009-demo-mode
+- **Contract Version**: unchanged (1.3.0)
+- **Stories**:
+  - [x] Add `demo_mode: bool = False` to Settings
+  - [x] Governance pipeline short-circuits to golden fixture when demo_mode=True
+  - [x] SEO pipeline short-circuits to golden fixture when demo_mode=True
+  - [x] Suggest-competitors endpoint returns hardcoded demo data when demo_mode=True
+  - [x] Existing tests patched to explicitly set demo_mode=False
+- **Files Changed**: app/core/config.py, app/services/pipeline.py, app/services/seo_pipeline.py, app/services/demo_fixture.py (new), app/api/suggest.py, .env.example, tests/test_demo_mode.py (new), tests/test_pipeline.py, tests/test_seo_pipeline.py, tests/test_error_handling.py, tests/test_suggest_competitors.py
+- **Tests**: +9 new (292 total backend)
+- **Review**: APPROVED (INLINE — orchestrator review)
+- **DoD**: PASSED
+- **Notes**: Risk: LOW. Confidence: HIGH. Production safety: demo_mode defaults to False. No schema/contract change. Out of scope: frontend, production deployment.
