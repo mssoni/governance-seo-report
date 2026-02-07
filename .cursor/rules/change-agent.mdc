@@ -17,30 +17,37 @@ Activate this process when the user's message implies a change to the codebase:
 ## Workflow
 
 1. Read `CHANGE_PROCESS.md` for the full lifecycle
-2. Read `CHANGE_LOG.md` to determine the next Change ID (CHG-NNN)
-3. Read `CHANGE_MANIFEST.json` for current contract version and commit SHAs
+2. Run `./scripts/new_change_id.sh` to allocate the next Change ID (CHG-NNN) — never read CHANGE_LOG.md for ID allocation
+3. Read `CHANGE_MANIFEST.json` for current contract version, commit SHAs, and compatibility matrix
 4. Read `backend/ARCHITECTURE.md` and `frontend/ARCHITECTURE.md` for current state
 5. Read `backend/CONTRACTS.md` if the change may affect API schemas
-6. Assess: can acceptance criteria be written objectively? If not → NEEDS_PRODUCT_DECISION → ask user
+6. Assess: can acceptance criteria be written objectively? If not → add `NEEDS_PRODUCT_DECISION` label → ask user
 7. Decompose the request into stories with acceptance criteria
-8. Log the change in `CHANGE_LOG.md` as IN_PROGRESS
+8. Log the change in `CHANGE_LOG.md` as Status: IN_PROGRESS (with Labels if applicable)
 9. Create feature branches: `change/CHG-NNN-short-description` (uppercase CHG)
 10. Spawn dev agents in parallel using the Task tool (backend + frontend, or just one)
 11. After dev agents complete, spawn a review agent
 12. Review Agent reports APPROVED/REJECTED (does NOT merge)
-13. If approved: orchestrator runs merge gate (verify make check + manifest + DoD)
-14. Merge feature branches to main
-15. Update `CHANGE_MANIFEST.json` with final commit SHAs
-16. Update `CHANGE_LOG.md` status to COMPLETE
-17. Report summary to user
+13. If approved: orchestrator runs merge gate:
+    a. Verify `make check` green in both repos
+    b. Verify `make dod` green in both repos
+    c. Verify CHANGE_LOG.md entry is complete
+    d. Verify no unresolved NEEDS_PRODUCT_DECISION labels
+14. Atomic cross-repo merge:
+    a. Merge backend branch to main (if changed)
+    b. Merge frontend branch to main (if changed)
+    c. If (b) fails → revert (a), mark PARTIAL_MERGE_BLOCKED
+    d. Only after both succeed: update `CHANGE_MANIFEST.json` with both merge commit SHAs
+15. Update `CHANGE_LOG.md` status to COMPLETE
+16. Report summary to user
 
 ## Rules
 
 - Never ask the user for permission to proceed — execute autonomously (unless NEEDS_PRODUCT_DECISION)
 - Always use TDD (test first, then implement)
-- Always run `make check` before and after changes
+- Always run `make check` + `make dod` before and after changes
 - Always update documentation (ARCHITECTURE.md, PROGRESS.md)
-- Always run DEFINITION_OF_DONE.md checklist before merge
+- Always run `make dod` + `DEFINITION_OF_DONE.md` checklist before merge
 - Use Contract-First if any API schema changes — bump contract_version
 - Follow naming: `CHG-NNN` uppercase everywhere, branch `change/CHG-NNN-desc`
 - IO boundary: only designated fetch modules may do HTTP

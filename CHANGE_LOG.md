@@ -11,7 +11,8 @@ Each entry follows this format:
 ### CHG-NNN: <Short Title>
 
 - **Date**: YYYY-MM-DD
-- **Status**: IN_PROGRESS | COMPLETE | REVERTED | NEEDS_PRODUCT_DECISION | NEEDS_ARCHITECTURE_REVIEW
+- **Status**: IN_PROGRESS | COMPLETE | REVERTED | BLOCKED | PARTIAL_MERGE_BLOCKED
+- **Labels**: [NEEDS_PRODUCT_DECISION] [NEEDS_ARCHITECTURE_REVIEW] [SCHEMA_CHANGE] [BREAKING_SCHEMA_CHANGE]
 - **Request**: <User's original prompt>
 - **Scope**: backend-only | frontend-only | both
 - **Branch**: change/CHG-NNN-short-description
@@ -24,9 +25,12 @@ Each entry follows this format:
   - Frontend: list of files
 - **Tests**: +N added, M modified
 - **Review**: APPROVED | APPROVED_WITH_FIXES | REJECTED
-- **DoD**: PASSED | FAILED (with failing items)
+- **DoD**: PASSED (`make dod` green) | FAILED (with failing items)
 - **Notes**: any follow-ups or warnings
 ```
+
+**Status** is a lifecycle state only. **Labels** are metadata flags that can co-exist with any status.
+This separation makes it possible to filter/automate on status without ambiguity.
 
 ---
 

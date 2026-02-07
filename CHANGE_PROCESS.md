@@ -40,7 +40,7 @@ User Prompt
 │ - Create user stories with acceptance criteria      │
 │ - If AC can't be objective → NEEDS_PRODUCT_DECISION │
 │ - Determine: backend-only, frontend-only, or both   │
-│ - Assign Change ID (CHG-NNN)                        │
+│ - Assign Change ID via ./scripts/new_change_id.sh   │
 │ - Write stories to CHANGE_LOG.md                    │
 └─────────────────────────────────────────────────────┘
     │
@@ -81,8 +81,8 @@ User Prompt
     ▼
 ┌─────────────────────────────────────────────────────┐
 │ Step 5: DEFINITION OF DONE (agent self-check)       │
-│ - Each agent runs the DoD checklist before commit   │
-│ - See DEFINITION_OF_DONE.md for the full list       │
+│ - Run `make dod` — automated enforcement checks     │
+│ - Run DEFINITION_OF_DONE.md manual checklist         │
 │ - If any item fails → fix before committing         │
 └─────────────────────────────────────────────────────┘
     │
@@ -103,21 +103,32 @@ User Prompt
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
-│ Step 7: MERGE GATE                                  │
+│ Step 7: MERGE GATE (Atomic Cross-Repo Protocol)     │
 │ - Review Agent reports APPROVED status               │
 │ - Orchestrator verifies:                            │
 │   1. `make check` green in both repos               │
-│   2. CHANGE_MANIFEST.json updated with commit SHAs  │
+│   2. `make dod` green in both repos                 │
 │   3. CHANGE_LOG.md entry is complete                 │
 │   4. No NEEDS_PRODUCT_DECISION items unresolved     │
-│ - Merge feature branch to main (both repos)         │
-│ - Update CHANGE_MANIFEST.json with final SHAs       │
+│ - Atomic Merge Sequence:                            │
+│   a. Merge backend branch to main (if changed)     │
+│   b. Merge frontend branch to main (if changed)    │
+│   c. If step (b) fails → revert step (a) or mark   │
+│      PARTIAL_MERGE_BLOCKED in CHANGE_LOG.md         │
+│   d. Only after both merges succeed:                │
+│      Update CHANGE_MANIFEST.json with BOTH merge    │
+│      commit SHAs in a dedicated manifest commit     │
 │ - No force pushes                                   │
 │ - Commit: merge(CHG-NNN): [description]             │
+│ - Manifest commit: chore(CHG-NNN): update manifest  │
 │                                                     │
 │ NOTE: When remote CI is configured, merge requires  │
-│ CI green on the remote. Local make check is the     │
-│ minimum gate until CI is set up.                    │
+│ CI green on the remote. Local `make check` + `make  │
+│ dod` is the minimum gate until CI is set up.        │
+│                                                     │
+│ SHA semantics: `backend_commit` / `frontend_commit` │
+│ always point to the MERGE COMMIT on main, not the   │
+│ feature branch tip.                                 │
 └─────────────────────────────────────────────────────┘
     │
     ▼
@@ -185,16 +196,35 @@ Both repos reference a shared manifest at the workspace root:
   "last_change_id": "CHG-001",
   "backend_commit": "abc123",
   "frontend_commit": "def456",
+  "compatibility": {
+    "backend_min_contract": "1.0.0",
+    "frontend_min_contract": "1.0.0"
+  },
   "updated_at": "2026-02-07",
   "notes": "Added PDF export"
 }
 ```
 
 **Rules:**
-- Updated after every merge (Step 7)
-- Backend and frontend commit SHAs must both be recorded
+- Updated after every merge (Step 7, specifically in the dedicated manifest commit)
+- Backend and frontend commit SHAs point to the **merge commit** on `main` (not the feature branch tip)
 - If only one repo changes, the other repo's SHA stays the same
-- Review Agent checks that `contract_version` matches between CONTRACTS.md and manifest
+- `compatibility` records the minimum `contract_version` each repo requires from the other
+- When bumping `contract_version`, update `compatibility` if the change is breaking (MAJOR)
+- Review Agent checks that `contract_version` matches between `CONTRACTS.md` and manifest
+- `make contract-check` (available in both repos) verifies sync automatically
+
+### CHG ID Allocation
+
+Change IDs are allocated from `last_change_id` in `CHANGE_MANIFEST.json` (single source of truth).
+
+**Process:**
+1. Run `./scripts/new_change_id.sh` from the workspace root
+2. The script atomically reads, increments, and writes the new ID
+3. Output: the new `CHG-NNN` ID (e.g., `CHG-002`)
+4. Never manually edit `last_change_id` — always use the script
+
+This prevents duplicate IDs when multiple changes happen in sequence.
 
 ---
 
@@ -223,30 +253,50 @@ Both repos reference a shared manifest at the workspace root:
 | `src/hooks/useJobPolling.ts` | Polling via api-client |
 | `src/hooks/useSeoJobPolling.ts` | Polling via api-client |
 
-**All components receive data via props. No direct fetch/axios calls in components.**
+**Components receive data via props. No direct fetch/axios calls in components.**
+Pages (`src/pages/`) may import `api-client.ts` since they are the orchestration layer.
+
+### Layering Rule (Transitive Import Prevention)
+Non-IO modules cannot import IO modules, even transitively:
+- Backend: `detectors/*`, `reasoning/*`, `seo/*`, `models/*` cannot import from `crawlers/*` or `services/*`
+- Frontend: `components/*` cannot import from `services/*` (pages may, as they orchestrate)
+- Only pipeline/orchestration modules (`services/pipeline.py`, `services/seo_pipeline.py`) import IO modules
+- Only hooks (`src/hooks/`) import `api-client.ts`
+- Enforced by `make dod` and `make io-boundary-check` (grep-based)
 
 ### Test Enforcement
 - Tests for detectors/analyzers/generators use fixtures ONLY (never live calls)
 - Tests for IO modules mock the HTTP layer (httpx mock, vi.mock)
 - Review Agent auto-rejects any Playwright/HTTP import in a non-IO module
+- `make dod` automates these checks — no human interpretation needed
 
 ---
 
-## 7. Kill Switch (Conditional Thresholds)
+## 7. Kill Switch (Attempt Budget)
 
-| Task Type | Time Limit | Approach Limit | Action |
-|-----------|-----------|---------------|--------|
-| Pure logic (normalizer, template, builder) | 20 min | 3 distinct strategies | BLOCKERS.md + release lock |
-| Integration/IO (endpoint, pipeline, API client) | 45 min | 3 distinct strategies | BLOCKERS.md + release lock |
-| External dependency failure (API quota, PSI down, DNS) | Immediate | 1 attempt | BLOCKERS.md + fallback plan |
+The kill switch is framed as an **attempt budget**, not a wall-clock timer (agents can't reliably track time).
 
-**"Approach"** = a distinct strategy (different algorithm, different library, different architecture). Repeated retries of the same approach do NOT count as separate approaches.
+| Task Type | Max Approaches | Max Failed Test Cycles | Action |
+|-----------|---------------|----------------------|--------|
+| Pure logic (normalizer, template, builder) | 3 distinct strategies | 2 consecutive full failures | BLOCKERS.md + release lock |
+| Integration/IO (endpoint, pipeline, API client) | 3 distinct strategies | 3 consecutive full failures | BLOCKERS.md + release lock |
+| External dependency failure (API quota, PSI down, DNS) | 1 attempt | 1 failure | BLOCKERS.md + immediate fallback plan |
 
-When triggered:
+**Definitions:**
+- **"Approach"** = a distinct strategy (different algorithm, different library, different architecture). Repeated retries of the same approach do NOT count as separate approaches.
+- **"Failed test cycle"** = running `make check` and getting test failures related to the current story. Lint-only failures don't count.
+
+**When triggered:**
 1. Write to `BLOCKERS.md`: what was attempted, what failed, proposed alternative
-2. Release lock in `CURRENT_TASKS.md`
-3. Commit WIP: `wip(CHG-NNN): blocked — see BLOCKERS.md`
-4. Report blocker to orchestrator
+2. Log attempt count in `PROGRESS.md`: `[BLOCKED] CHG-NNN: 3/3 approaches exhausted`
+3. Release lock in `CURRENT_TASKS.md`
+4. Commit WIP: `wip(CHG-NNN): blocked — see BLOCKERS.md`
+5. Report blocker to orchestrator
+
+**Guideline times** (informational, not enforced):
+- Pure logic: ~20 min typical
+- Integration: ~45 min typical
+- These are expectations, not hard gates. The attempt budget is the enforcement mechanism.
 
 ---
 
@@ -288,11 +338,32 @@ For any change that touches URL handling, crawling, or fetching:
 | Constraint | Required Test |
 |-----------|--------------|
 | SSRF prevention | Private IPs (10.x, 172.16-31.x, 192.168.x), localhost, ::1 blocked |
+| SSRF DNS rebinding | Resolve hostname → IP at request time, validate resolved IP is not private |
+| Redirect policy | Max 3 redirects followed; each redirect target validated against SSRF rules |
 | robots.txt respect | Disallowed paths not crawled (best effort) |
 | Max pages cap | Hard limit of 12 pages per analysis (enforced + tested) |
 | Per-domain rate limit | Max 2 concurrent requests per domain |
 | URL scheme whitelist | Only `http://` and `https://` allowed (no `file://`, `ftp://`, `javascript:`) |
 | Timeout enforcement | Per-fetch timeout of 15s, overall pipeline timeout of 90s |
+
+### DNS Rebinding Protection
+
+Classic SSRF bypass: a domain resolves to a public IP first, then to a private IP on the second resolution.
+
+**Mitigation:**
+1. Resolve the hostname to an IP address before making the request
+2. Validate the resolved IP is not in private/reserved ranges
+3. On redirects, re-validate the new target URL's resolved IP
+4. Cap redirects to 3 maximum (`follow_redirects=True` with `max_redirects=3`)
+
+### Redirect Policy
+
+| Setting | Value |
+|---------|-------|
+| Follow redirects? | Yes |
+| Max redirects | 3 |
+| Validate redirect targets? | Yes (SSRF check on each hop) |
+| Cross-domain redirects? | Allowed (but each target validated) |
 
 These tests must exist and pass. The Review Agent rejects if any are missing when relevant code is changed.
 
@@ -300,11 +371,11 @@ These tests must exist and pass. The Review Agent rejects if any are missing whe
 
 ## 10. Escalation Paths
 
-Not all requests can be handled autonomously.
+Not all requests can be handled autonomously. Escalation paths use **Labels** (not Status) in `CHANGE_LOG.md`. A change can be `IN_PROGRESS` with a `NEEDS_PRODUCT_DECISION` label.
 
 ### NEEDS_PRODUCT_DECISION
 
-Add this label to the CHANGE_LOG entry when:
+Add this **label** to the CHANGE_LOG entry when:
 - Acceptance criteria cannot be written objectively ("make it look better")
 - The change has UX trade-offs requiring human judgment
 - The change affects sales/conversion copy tone
@@ -314,7 +385,7 @@ Add this label to the CHANGE_LOG entry when:
 
 ### NEEDS_ARCHITECTURE_REVIEW
 
-Add this label when:
+Add this **label** when:
 - The change requires a new external dependency
 - The change restructures more than 3 modules
 - The change introduces a new data store or caching layer
@@ -344,14 +415,15 @@ BRANCH: change/CHG-NNN-short-description
 ## RULES
 - TDD: write test first → fail → implement → pass → make check
 - IO boundary: only fetch modules (crawlers/, services/*_client.py) may do HTTP
+- Layering: detectors/reasoning/seo/models cannot import from crawlers/services
 - Contract-First if schema changes: bump contract_version, update all artifacts
-- Before committing: run DEFINITION_OF_DONE.md checklist
+- Before committing: run `make dod` + DEFINITION_OF_DONE.md checklist
 - Commit: feat(CHG-NNN): <description>
 - Update: ARCHITECTURE.md, PROGRESS.md, CURRENT_TASKS.md
 
-## KILL SWITCH
-- Pure logic: 20 min / 3 approaches
-- Integration: 45 min / 3 approaches
+## KILL SWITCH (attempt budget)
+- Pure logic: 3 approaches / 2 failed test cycles
+- Integration: 3 approaches / 3 failed test cycles
 - External failure: immediate → BLOCKERS.md
 
 ## WHEN DONE
@@ -372,7 +444,8 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 
 ## STEPS
 1. Run `make check` in both repos
-2. Run DEFINITION_OF_DONE.md checklist — reject if any item fails
+2. Run `make dod` in both repos — reject if any check fails
+3. Run DEFINITION_OF_DONE.md manual checklist — reject if any item fails
 3. Check auto-reject triggers — reject immediately if any fire
 4. Review code: schema alignment, copy tone, accessibility, test coverage
 5. Check IO boundary: no HTTP in detector/analyzer/template modules
@@ -402,6 +475,15 @@ The orchestrator handles the merge gate.
 
 If a change breaks `main` after merge:
 1. `git revert` the merge commit in the affected repo(s)
-2. Update `CHANGE_MANIFEST.json` to reflect the revert
+2. Update `CHANGE_MANIFEST.json` to reflect the revert (restore previous SHAs)
 3. Create a new change request to fix the issue properly
 4. Log the revert in `CHANGE_LOG.md` with status `REVERTED`
+
+### Partial Merge Recovery
+
+If backend merged but frontend merge fails (or vice versa):
+1. Set CHANGE_LOG status to `PARTIAL_MERGE_BLOCKED`
+2. Revert the successfully merged repo: `git revert <merge-commit-sha>`
+3. DO NOT update `CHANGE_MANIFEST.json` (it should still reflect the pre-merge state)
+4. Fix the failing merge, then retry the full atomic sequence
+5. Never leave repos in a mismatched state on `main`
