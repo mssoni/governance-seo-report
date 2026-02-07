@@ -17,4 +17,38 @@
 
 -->
 
-_No transactions yet. First entry will be appended when the merge gate runs._
+### TX-2026-02-07-001 — CHG-001
+- **status:** COMPLETED
+- **backend_branch:** change/CHG-001-increase-limits-cta
+- **frontend_branch:** change/CHG-001-increase-limits-cta
+- **backend_merge_commit:** b3abc1172e8b2c26cf85c3328d5dec45b8dec0aa
+- **frontend_merge_commit:** 3f78b7548ea0ae6c82aa589a9947fc2290327c60
+- **manifest_commit:** (workspace root, uncommitted)
+- **notes:** Clean merge. Both repos merged with --no-ff. Contract v1.1.0. 354 tests total.
+
+### TX-2026-02-07-002 — CHG-002
+- **status:** COMPLETED
+- **backend_branch:** change/CHG-002-increase-timeout-450
+- **frontend_branch:** n/a
+- **backend_merge_commit:** be8fe7db4325b714a44efb1b572e2a74d85aaaf6
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only config change. pipeline_timeout_seconds 180→450. No contract change. (CHG-002 — reverted, process not followed)
+
+### TX-2026-02-07-003 — CHG-003
+- **status:** COMPLETED
+- **backend_branch:** change/CHG-003-increase-timeout-450
+- **frontend_branch:** n/a
+- **backend_merge_commit:** 11dd2d9f8797d14cc557e7ce78910482e1c7aa84
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Redo of CHG-002 with full 8-step process. pipeline_timeout_seconds 180→450. Review Agent approved. All 11 triggers pass.
+
+### TX-2026-02-07-004 — CHG-004
+- **status:** COMPLETED
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-004-fix-progress-percentage
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** d71af697d3bd8cc2786af4d16f8cbecd10fb69ba
+- **manifest_commit:** (workspace root)
+- **notes:** Frontend-only. ProgressBar showed raw 0.0–1.0 as percentage instead of multiplying by 100. Fixed component + corrected mock data in report-page tests. 5 new tests added. INLINE mode.
