@@ -120,3 +120,30 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (INLINE — orchestrator review, all 11 triggers pass, make check + make dod green)
 - **DoD**: PASSED
 - **Notes**: Risk: LOW. Confidence: HIGH. Root cause: ProgressBar displayed backend's 0.0–1.0 float directly with % sign. Existing test mocks used 0–100 scale incorrectly, masking the bug. TDD confirmed (3 tests failed before fix).
+
+### CHG-005: Two-View Report — Business Overview + Technical Details
+
+- **Date**: 2026-02-07
+- **Status**: COMPLETE
+- **Labels**: [SCHEMA_CHANGE]
+- **Request**: Add "Business Overview" tab (default) showing executive narrative, business-impact categories, and top 3 improvements. Keep existing technical view as "Technical Details" tab. Make report accessible to non-technical business owners.
+- **Scope**: backend + frontend
+- **Mode**: STANDARD
+- **Branch**: change/CHG-005-two-view-report
+- **Contract Version**: 1.1.0 → 1.2.0 (additive)
+- **Stories**:
+  - [x] Backend: Schema additions (executive_narrative, business_category, TopImprovement, top_improvements)
+  - [x] Backend: Business category mapping for all 28 signal templates
+  - [x] Backend: Executive narrative generation (Gemini + deterministic fallback)
+  - [x] Backend: Top 3 improvements extraction from pipeline
+  - [x] Backend: Tests for all new functionality (20 new tests)
+  - [x] Frontend: Type updates, 3 new components (ExecutiveStory, BusinessImpactCategories, TopImprovements)
+  - [x] Frontend: Tab restructure (Business Overview default, Technical Details, SEO)
+  - [x] Frontend: Tests for new components and tab behavior (18 new tests)
+- **Files Changed**:
+  - Backend (14 files): schemas.py, templates.py, issue_builder.py, gemini_summarizer.py, pipeline.py, golden fixture, test_business_view.py (new), CONTRACTS.md, ARCHITECTURE.md, PROGRESS.md, REVIEW_LOG.md
+  - Frontend (18 files): api.ts, ExecutiveStory.tsx (new), BusinessImpactCategories.tsx (new), TopImprovements.tsx (new), ReportTabs.tsx, ReportPage.tsx, SidePanel.tsx, golden fixture, 4 new test files, CONTRACTS.md, ARCHITECTURE.md, PROGRESS.md, REVIEW_LOG.md
+- **Tests**: 38 added (20 backend, 18 frontend). Total: 397 (252 backend, 145 frontend)
+- **Review**: APPROVED (Review Agent — all 11 triggers pass, make check + make dod green in both repos)
+- **DoD**: PASSED
+- **Notes**: Risk: MEDIUM. Confidence: HIGH. Additive schema change only. Existing views untouched. Out of scope: checklist changes, SEO report changes, backend detector changes. Review agent applied 4 fix commits (contract bump, docs, review log).
