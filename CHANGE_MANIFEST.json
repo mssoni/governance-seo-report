@@ -1,12 +1,12 @@
 {
   "contract_version": "1.2.0",
-  "last_change_id": "CHG-005",
-  "backend_commit": "ab6af00334855f88b8c7965923ec7afc7281c44f",
+  "last_change_id": "CHG-006",
+  "backend_commit": "40e6bb98c87b62ef4f677bc8c93ea01eea3e2da0",
   "frontend_commit": "4294761d92c705d7e798b5dee95c5c845acf1519",
   "compatibility": {
     "backend_min_contract": "1.2.0",
     "frontend_min_contract": "1.2.0"
   },
   "updated_at": "2026-02-07",
-  "notes": "CHG-005: Two-View Report. Additive schema: executive_narrative, business_category, TopImprovement, top_improvements. Contract 1.1.0 → 1.2.0."
+  "notes": "CHG-006 merged. Executive narrative rewritten with business-goal framing. No schema change. 277 backend tests."
 }

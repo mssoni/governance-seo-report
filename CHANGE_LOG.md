@@ -147,3 +147,29 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (Review Agent — all 11 triggers pass, make check + make dod green in both repos)
 - **DoD**: PASSED
 - **Notes**: Risk: MEDIUM. Confidence: HIGH. Additive schema change only. Existing views untouched. Out of scope: checklist changes, SEO report changes, backend detector changes. Review agent applied 4 fix commits (contract bump, docs, review log).
+
+### CHG-006: Business-Goal-Aware Executive Narrative
+
+- **Date**: 2026-02-07
+- **Status**: IN_PROGRESS
+- **Labels**: (none)
+- **Request**: Rewrite executive narrative to frame findings around predicted business goals (e.g., "more patients" for clinics) instead of citing technical issue titles. Never mention technical jargon — only business outcomes on/off track.
+- **Scope**: backend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-006-business-narrative
+- **Contract Version**: (unchanged, 1.2.0 — executive_narrative is still a string)
+- **Stories**:
+  - [x] Create business goal mapping per BusinessType (10 types)
+  - [x] Rewrite deterministic narrative builder with business framing
+  - [x] Update Gemini prompt with business context
+  - [x] Wire business_type/intent through pipeline to narrative builders
+- **Files Changed**:
+  - `backend/app/reasoning/business_goals.py` — new file: goal mapping for 10 business types, category impacts, positive translations
+  - `backend/app/reasoning/gemini_summarizer.py` — rewritten build_deterministic_narrative(), updated Gemini prompt
+  - `backend/app/services/pipeline.py` — passes business_type and intent to narrative builders
+  - `backend/tests/test_business_narrative.py` — new file, 25 tests
+  - `backend/tests/test_business_view.py` — 1 assertion updated for new vocabulary
+- **Tests**: 25 added, 1 modified. Total: 277 backend tests
+- **Review**: APPROVED (INLINE — orchestrator review, all 11 triggers pass, make check + make dod green)
+- **DoD**: PASSED
+- **Notes**: Risk: LOW. Confidence: HIGH. No schema change. Out of scope: frontend changes, contract bump, new models. TDD confirmed (import error before implementation). Narrative never uses technical jargon — enforced by test with 27 banned terms.

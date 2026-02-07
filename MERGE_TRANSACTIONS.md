@@ -61,3 +61,12 @@
 - **frontend_merge_commit:** 4294761d92c705d7e798b5dee95c5c845acf1519
 - **manifest_commit:** (workspace root)
 - **notes:** Two-view report: Business Overview (default) + Technical Details tabs. 38 new tests (20 backend, 18 frontend). Contract 1.1.0 → 1.2.0 (additive). Schema: executive_narrative, business_category, TopImprovement, top_improvements. Review Agent approved, 4 fix commits. STANDARD mode.
+
+### TX-2026-02-07-006 — CHG-006
+- **status:** COMPLETED
+- **backend_branch:** change/CHG-006-business-narrative
+- **frontend_branch:** n/a
+- **backend_merge_commit:** 40e6bb98c87b62ef4f677bc8c93ea01eea3e2da0
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Rewrote executive narrative to frame around predicted business goals. New module business_goals.py. No schema change. 25 new tests. INLINE mode.
