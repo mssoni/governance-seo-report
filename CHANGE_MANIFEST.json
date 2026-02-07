@@ -1,10 +1,10 @@
 {
-  "contract_version": "1.0.0",
-  "last_change_id": null,
+  "contract_version": "1.1.0",
+  "last_change_id": "CHG-001",
   "backend_commit": null,
   "frontend_commit": null,
   "compatibility": {
-    "backend_min_contract": "1.0.0",
+    "backend_min_contract": "1.1.0",
     "frontend_min_contract": "1.0.0"
   },
   "updated_at": "2026-02-07",
