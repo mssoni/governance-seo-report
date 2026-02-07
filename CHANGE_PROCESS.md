@@ -1,15 +1,18 @@
-# Change Process v2.1
+# Change Process v2.2
 
 > How changes are requested, developed, reviewed, and merged after V1 is complete.
 > v2.0: merge safety, contract versioning, IO boundaries, flaky test protocol, deterministic rejection.
 > v2.1: automated DoD enforcement (`make dod`), atomic merge protocol, CHG ID allocation script,
 > DNS rebinding protection, attempt-budget kill switch, layering tests, compatibility matrix.
+> v2.2: hard-gate vs heuristic labeling, merge strategy enforcement (`--no-ff`, no squash),
+> merge transaction log, structured escalation templates, centralized observability helper,
+> response size cap, redirect re-validation, data migration placeholder rules.
 
 ## Overview
 
 Every change follows an **8-step lifecycle**. The assistant acts as a **Change Agent** (orchestrator) — the user provides a plain-English change request and the agent handles everything autonomously.
 
-**Minimal manual routing.** The user's only role is to describe the change. If acceptance criteria cannot be written objectively, the orchestrator escalates with a `NEEDS_PRODUCT_DECISION` label.
+**Minimal ambiguity; remaining cases are explicitly escalated.** The user's only role is to describe the change. The process uses hard gates where possible and deterministic heuristics elsewhere. If acceptance criteria cannot be written objectively, the orchestrator escalates with a `NEEDS_PRODUCT_DECISION` label.
 
 ---
 
@@ -111,14 +114,21 @@ User Prompt
 │   2. `make dod` green in both repos                 │
 │   3. CHANGE_LOG.md entry is complete                 │
 │   4. No NEEDS_PRODUCT_DECISION items unresolved     │
+│ - Merge strategy: ALWAYS merge commit (--no-ff)     │
+│   No squash merges. No rebases onto main.           │
+│   This ensures every merge is revertible with a     │
+│   single `git revert`.                              │
 │ - Atomic Merge Sequence:                            │
-│   a. Merge backend branch to main (if changed)     │
-│   b. Merge frontend branch to main (if changed)    │
-│   c. If step (b) fails → revert step (a) or mark   │
+│   a. Log STARTED in MERGE_TRANSACTIONS.md           │
+│   b. Merge backend branch to main (if changed)     │
+│   c. Merge frontend branch to main (if changed)    │
+│   d. If step (c) fails → revert step (b), log      │
+│      ROLLED_BACK in MERGE_TRANSACTIONS.md, mark     │
 │      PARTIAL_MERGE_BLOCKED in CHANGE_LOG.md         │
-│   d. Only after both merges succeed:                │
+│   e. Only after both merges succeed:                │
 │      Update CHANGE_MANIFEST.json with BOTH merge    │
 │      commit SHAs in a dedicated manifest commit     │
+│   f. Log COMPLETED in MERGE_TRANSACTIONS.md         │
 │ - No force pushes                                   │
 │ - Commit: merge(CHG-NNN): [description]             │
 │ - Manifest commit: chore(CHG-NNN): update manifest  │
@@ -248,21 +258,34 @@ This prevents duplicate IDs when multiple changes happen in sequence.
 **Everything else (detectors, templates, issue builders, gap analyzers, action plan generators) MUST accept data as function arguments. No HTTP calls. No file reads. Pure functions.**
 
 ### Frontend
-| Allowed IO modules | Purpose |
-|-------------------|---------|
-| `src/services/api-client.ts` | Backend API calls |
-| `src/hooks/useJobPolling.ts` | Polling via api-client |
-| `src/hooks/useSeoJobPolling.ts` | Polling via api-client |
 
-**Components receive data via props. No direct fetch/axios calls in components.**
-Pages (`src/pages/`) may import `api-client.ts` since they are the orchestration layer.
+IO is allowed in three layers only:
+
+| Layer | Modules | What they may do |
+|-------|---------|-----------------|
+| **Service layer** | `src/services/api-client.ts` | Define HTTP methods (get, post). The ONLY module that calls `fetch`. |
+| **Hook layer** | `src/hooks/useJobPolling.ts`, `src/hooks/useSeoJobPolling.ts` | Call `api-client` methods. Manage polling lifecycle. |
+| **Page layer** | `src/pages/LandingPage.tsx`, `src/pages/ReportPage.tsx` | Import and call `api-client` methods (e.g., `apiClient.post()`). Wire data into components via props. |
+
+**What pages may NOT do:**
+- Call `fetch()` or `axios` directly — always go through `api-client.ts`
+- Import any module from `node_modules` that performs HTTP (e.g., `axios`, `ky`, `got`)
+
+**Components (`src/components/`):**
+- Receive ALL data via props. Zero imports from `src/services/`.
+- No `fetch()`, no `axios`, no `api-client` imports.
+
+In React, pages are technically components, but in this architecture they serve as
+the **orchestration boundary** — the place where IO meets UI. This is why pages may
+import `api-client` but components may not.
 
 ### Layering Rule (Transitive Import Prevention)
 Non-IO modules cannot import IO modules, even transitively:
 - Backend: `detectors/*`, `reasoning/*`, `seo/*`, `models/*` cannot import from `crawlers/*` or `services/*`
-- Frontend: `components/*` cannot import from `services/*` (pages may, as they orchestrate)
+- Frontend: `components/*` cannot import from `services/*`
+- Frontend pages may import `api-client.ts` but NOT call `fetch()` directly
 - Only pipeline/orchestration modules (`services/pipeline.py`, `services/seo_pipeline.py`) import IO modules
-- Only hooks (`src/hooks/`) import `api-client.ts`
+- Only hooks and pages import `api-client.ts` — components never do
 - Enforced by `make dod` and `make io-boundary-check` (grep-based)
 
 ### Test Enforcement
@@ -303,6 +326,20 @@ The kill switch is framed as an **attempt budget**, not a wall-clock timer (agen
 
 ## 8. Observability Requirements
 
+### Centralized Helper
+
+All IO modules MUST use the `log_event()` helper from `app/observability/logging.py`:
+
+```python
+from app.observability.logging import log_event
+
+# Usage in any IO module:
+log_event(request_id=job_id, step="fetch_html", url=url, status="ok", duration_ms=142)
+log_event(request_id=job_id, step="psi_api", url=url, status="error", error_code="TIMEOUT", duration_ms=15000)
+```
+
+**Rule:** Any new IO module that does not use `log_event()` is flagged by the Review Agent (DoD item [R]).
+
 ### Request ID
 Every report generation job gets a `request_id` (the `job_id` from `JobManager`). All log entries for that job include the `request_id`.
 
@@ -323,6 +360,7 @@ Every report generation job gets a `request_id` (the `job_id` from `JobManager`)
 | `CONNECTION_ERROR` | TCP connection failed | Yes (1x) |
 | `NON_HTML` | Response is PDF/image/binary | No |
 | `API_QUOTA` | External API quota exceeded | No (log + degrade) |
+| `RESPONSE_TOO_LARGE` | Response body > 5 MB | No |
 
 ### Retry Policy
 - Max 1 retry for retryable errors
@@ -340,7 +378,9 @@ For any change that touches URL handling, crawling, or fetching:
 |-----------|--------------|
 | SSRF prevention | Private IPs (10.x, 172.16-31.x, 192.168.x), localhost, ::1 blocked |
 | SSRF DNS rebinding | Resolve hostname → IP at request time, validate resolved IP is not private |
-| Redirect policy | Max 3 redirects followed; each redirect target validated against SSRF rules |
+| Redirect re-validation | Each redirect hop re-resolves hostname and re-validates against SSRF rules |
+| Redirect cap | Max 3 redirects; `TooManyRedirects` handled explicitly |
+| Max response size | 5 MB per page (prevent memory exhaustion / zip bombs) |
 | robots.txt respect | Disallowed paths not crawled (best effort) |
 | Max pages cap | Hard limit of 12 pages per analysis (enforced + tested) |
 | Per-domain rate limit | Max 2 concurrent requests per domain |
@@ -354,7 +394,7 @@ Classic SSRF bypass: a domain resolves to a public IP first, then to a private I
 **Mitigation:**
 1. Resolve the hostname to an IP address before making the request
 2. Validate the resolved IP is not in private/reserved ranges
-3. On redirects, re-validate the new target URL's resolved IP
+3. On redirects, re-validate the new target URL's resolved IP (httpx event hooks or manual follow)
 4. Cap redirects to 3 maximum (`follow_redirects=True` with `max_redirects=3`)
 
 ### Redirect Policy
@@ -363,8 +403,17 @@ Classic SSRF bypass: a domain resolves to a public IP first, then to a private I
 |---------|-------|
 | Follow redirects? | Yes |
 | Max redirects | 3 |
-| Validate redirect targets? | Yes (SSRF check on each hop) |
+| Validate redirect targets? | Yes (SSRF re-validation on each hop) |
 | Cross-domain redirects? | Allowed (but each target validated) |
+| Scheme changes on redirect? | Only http→https allowed; https→http blocked |
+
+### Response Size Cap
+
+| Setting | Value |
+|---------|-------|
+| Max response body | 5 MB (5,242,880 bytes) |
+| Enforcement | Stream response, abort if `Content-Length` > limit or streamed bytes exceed limit |
+| Error | Return `FetchResult` with error "Response too large" (do not raise) |
 
 These tests must exist and pass. The Review Agent rejects if any are missing when relevant code is changed.
 
@@ -382,7 +431,26 @@ Add this **label** to the CHANGE_LOG entry when:
 - The change affects sales/conversion copy tone
 - Multiple valid approaches exist with significantly different user impact
 
-**Action:** Orchestrator asks the user for clarification before proceeding. Does NOT spawn agents.
+**Action:** Orchestrator presents a **structured escalation** to the user using this template:
+
+```
+## Decision Needed: [CHG-NNN] [Short Title]
+
+**What:** [1-sentence description of the decision]
+
+**Options:**
+  A. [Option A] — [trade-off summary]
+  B. [Option B] — [trade-off summary]
+  C. [Option C, if applicable]
+
+**Recommendation:** [A/B/C] — [why]
+
+**Impact on success metrics:** [which metric changes and directionally how]
+
+**Default if no response:** [Option X after 24h]
+```
+
+Does NOT spawn agents until the user responds.
 
 ### NEEDS_ARCHITECTURE_REVIEW
 
@@ -391,7 +459,7 @@ Add this **label** when:
 - The change restructures more than 3 modules
 - The change introduces a new data store or caching layer
 
-**Action:** Orchestrator describes the architectural options and asks the user to choose before proceeding.
+**Action:** Orchestrator presents options using the same structured template above, focused on architectural trade-offs (performance, complexity, dependency risk).
 
 ---
 
@@ -443,23 +511,38 @@ You are the REVIEW AGENT for change CHG-NNN.
 BACKEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/backend
 FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 
-## STEPS
-1. Run `make check` in both repos
-2. Run `make dod` in both repos — reject if any check fails
-3. Run DEFINITION_OF_DONE.md manual checklist — reject if any item fails
-4. Check auto-reject triggers — reject immediately if any fire
-5. Review code: schema alignment, copy tone, accessibility, test coverage
-6. Check IO boundary + layering: no HTTP in pure modules, no IO module imports
-7. Check for flaky tests (FLAKY_TESTS.md protocol)
-8. Auto-fix small issues (lint, format, missing logs)
-9. Append findings to REVIEW_LOG.md
-10. Report: APPROVED or REJECTED with reasons
+## PHASE 1: AUTOMATED GATES (run first, reject immediately on failure)
+1. Run `make check` in both repos — if fail: try small fix, re-run; if still fail → REJECT
+2. Run `make dod` in both repos — if fail → REJECT (no fix attempt)
+3. Check 10 auto-reject triggers below — if any fire → REJECT (no fix attempt)
 
-## AUTO-REJECT TRIGGERS (immediate reject, no fix attempt)
+## PHASE 2: MANUAL CHECKLIST (run only if Phase 1 passes)
+4. Walk DEFINITION_OF_DONE.md [R]-tagged items:
+   - Tests added for new functionality?
+   - External calls have timeouts + use log_event() helper?
+   - ARCHITECTURE.md, PROGRESS.md, CHANGE_LOG.md updated?
+   - Scope: git diff touches only change-related files?
+   - Contract version bumped if schema changed?
+5. Review code quality: schema alignment, copy tone, accessibility
+6. Check for flaky tests (FLAKY_TESTS.md protocol)
+
+## PHASE 3: FIX OR REJECT
+7. Auto-fix small issues (lint, format, missing log lines, missing doc entries)
+   - Commit fixes as: fix(CHG-NNN): [what was fixed per review]
+   - Re-run `make check` + `make dod` after fixes
+8. If architectural issue found → REJECT to REVIEW_LOG.md with explanation
+
+## PHASE 4: REPORT
+9. Append all findings to REVIEW_LOG.md
+10. Report to orchestrator: APPROVED or REJECTED with reasons
+    - If APPROVED: list any warnings or follow-ups
+    - If REJECTED: list specific failing items + which dev agent should fix
+
+## 10 AUTO-REJECT TRIGGERS (deterministic, no fix attempt)
 1. Contract changed without contract_version bump + fixture updates
 2. New dependency without ARCHITECTURE.md update
 3. New endpoint/component without tests
-4. Scope drift (diff touches files outside change scope)
+4. Scope drift (diff touches files outside change scope — heuristic)
 5. Live network call in test files
 6. HTTP/Playwright import in non-IO module
 7. Non-IO module importing an IO module (layering violation)
@@ -467,20 +550,64 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 9. `make dod` fails after review fixes
 10. CHANGE_LOG.md entry missing
 
-## IMPORTANT
-You do NOT merge. You report APPROVED/REJECTED status.
-The orchestrator handles the merge gate.
+Plus umbrella rule: reject if ANY DoD checklist item fails.
+
+## CRITICAL CONSTRAINTS
+- You do NOT merge. You report APPROVED/REJECTED status only.
+- The orchestrator handles the merge gate.
+- You never skip Phase 1. If automated gates fail, do not proceed to Phase 2.
 ```
 
 ---
 
-## 12. Rollback
+## 12. Merge Strategy
+
+**Always merge commit (`--no-ff`). No squash merges. No rebases onto main.**
+
+| Rule | Reason |
+|------|--------|
+| `git merge --no-ff` | Every merge is a single commit, revertible with one `git revert` |
+| No squash | Preserves full commit history; `merge(CHG-NNN)` format stays intact |
+| No rebase onto main | Prevents rewriting shared history; keeps SHAs stable |
+
+This is enforced in the merge gate. If an agent uses `--squash` or `rebase`, the Review Agent rejects.
+
+---
+
+## 13. Merge Transaction Log
+
+Every cross-repo merge is logged in `MERGE_TRANSACTIONS.md` (workspace root, append-only).
+
+### Entry Format
+
+```markdown
+### TX-YYYY-MM-DD-HH:MM — CHG-NNN
+- **status:** STARTED | COMPLETED | ROLLED_BACK | FAILED
+- **backend_branch:** change/CHG-NNN-...
+- **frontend_branch:** change/CHG-NNN-... (or "n/a")
+- **backend_merge_commit:** <sha> (or "n/a")
+- **frontend_merge_commit:** <sha> (or "n/a")
+- **manifest_commit:** <sha> (or "n/a")
+- **notes:** <what happened, if rollback needed>
+```
+
+**Rules:**
+- Append `STARTED` entry before any `git merge`
+- Update to `COMPLETED` after manifest commit
+- Update to `ROLLED_BACK` if partial merge recovery triggered
+- Update to `FAILED` if merge is abandoned
+- Never delete entries — this is an audit trail
+
+---
+
+## 14. Rollback
 
 If a change breaks `main` after merge:
 1. `git revert` the merge commit in the affected repo(s)
 2. Update `CHANGE_MANIFEST.json` to reflect the revert (restore previous SHAs)
 3. Create a new change request to fix the issue properly
 4. Log the revert in `CHANGE_LOG.md` with status `REVERTED`
+5. Update `MERGE_TRANSACTIONS.md` with `ROLLED_BACK` status
 
 ### Partial Merge Recovery
 
@@ -488,5 +615,24 @@ If backend merged but frontend merge fails (or vice versa):
 1. Set CHANGE_LOG status to `PARTIAL_MERGE_BLOCKED`
 2. Revert the successfully merged repo: `git revert <merge-commit-sha>`
 3. DO NOT update `CHANGE_MANIFEST.json` (it should still reflect the pre-merge state)
-4. Fix the failing merge, then retry the full atomic sequence
-5. Never leave repos in a mismatched state on `main`
+4. Log `ROLLED_BACK` in `MERGE_TRANSACTIONS.md`
+5. Fix the failing merge, then retry the full atomic sequence
+6. Never leave repos in a mismatched state on `main`
+
+---
+
+## 15. Data Migration Rules (Future-Proofing)
+
+V1 is stateless, but when persistence is added (database, cache, queue), these rules apply:
+
+| Rule | Detail |
+|------|--------|
+| Reversibility | Every schema migration must have a corresponding rollback migration |
+| Idempotency | Running a migration twice must produce the same result as running it once |
+| Backfill strategy | If a new column/field is added, define how existing records get populated |
+| Migration testing | Migrations are tested with fixture data in CI before deploy |
+| Sequencing | Migrations must be numbered and applied in order |
+
+**When to activate:** As soon as any of these are introduced: PostgreSQL, Redis, job queue (beyond in-memory `JobManager`), file-based cache, or any external state store.
+
+Until then, these rules serve as placeholders so the Change Agent doesn't have to invent them under pressure.

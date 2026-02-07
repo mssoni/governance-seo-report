@@ -33,11 +33,13 @@ Activate this process when the user's message implies a change to the codebase:
     b. Verify `make dod` green in both repos
     c. Verify CHANGE_LOG.md entry is complete
     d. Verify no unresolved NEEDS_PRODUCT_DECISION labels
-14. Atomic cross-repo merge:
-    a. Merge backend branch to main (if changed)
-    b. Merge frontend branch to main (if changed)
-    c. If (b) fails → revert (a), mark PARTIAL_MERGE_BLOCKED
-    d. Only after both succeed: update `CHANGE_MANIFEST.json` with both merge commit SHAs
+14. Atomic cross-repo merge (always `--no-ff`, never squash):
+    a. Append STARTED entry to `MERGE_TRANSACTIONS.md`
+    b. Merge backend branch to main: `git merge --no-ff change/CHG-NNN-...` (if changed)
+    c. Merge frontend branch to main: `git merge --no-ff change/CHG-NNN-...` (if changed)
+    d. If (c) fails → revert (b), log ROLLED_BACK in `MERGE_TRANSACTIONS.md`, mark PARTIAL_MERGE_BLOCKED
+    e. Only after both succeed: update `CHANGE_MANIFEST.json` with both merge commit SHAs
+    f. Log COMPLETED in `MERGE_TRANSACTIONS.md`
 15. Update `CHANGE_LOG.md` status to COMPLETE
 16. Report summary to user
 
