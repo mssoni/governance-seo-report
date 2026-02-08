@@ -46,6 +46,7 @@
 
 - [ ] `ARCHITECTURE.md` updated (new files, changed interfaces, dependency changes) **[R]**
 - [ ] `PROGRESS.md` updated with change entry and test counts **[R]**
+- [ ] `ENGINEERING_PLAN.md` updated — Version History row added + Current Statistics refreshed (verify with `./scripts/plan_stats.sh`) **[R]**
 - [ ] `CURRENT_TASKS.md` lock released **[R]**
 - [ ] `CHANGE_LOG.md` entry exists with correct Change ID **[R]**
 

@@ -86,7 +86,7 @@ CHANGELOG_SECTION=$(extract_changelog_section)
 # ---------------------------------------------------------------------------
 # 1. CHANGE_LOG.md entry exists
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[1/12] CHANGE_LOG.md entry${NC}"
+echo -e "${BOLD}[1/13] CHANGE_LOG.md entry${NC}"
 if [ "$CHANGELOG_SECTION" = "NOT_FOUND" ]; then
   check_fail "No entry for ${CHANGE_ID} in CHANGE_LOG.md"
   echo -e "${RED}Cannot continue — CHANGE_LOG entry is required.${NC}"
@@ -98,7 +98,7 @@ fi
 # ---------------------------------------------------------------------------
 # 2. CHANGE_LOG.md has required fields
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[2/12] CHANGE_LOG required fields${NC}"
+echo -e "${BOLD}[2/13] CHANGE_LOG required fields${NC}"
 
 for field in "Status" "Scope" "Mode" "Branch" "Stories" "Files Changed" "Tests" "Review" "DoD"; do
   if echo "$CHANGELOG_SECTION" | grep -qi "\\*\\*${field}\\*\\*"; then
@@ -129,7 +129,7 @@ fi
 # ---------------------------------------------------------------------------
 # 3. Scope detection
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[3/12] Scope detection${NC}"
+echo -e "${BOLD}[3/13] Scope detection${NC}"
 HAS_BACKEND=false
 HAS_FRONTEND=false
 
@@ -145,7 +145,7 @@ check_pass "Scope: ${SCOPE} (backend=${HAS_BACKEND}, frontend=${HAS_FRONTEND})"
 # ---------------------------------------------------------------------------
 # 4. Feature branch exists (not direct commit to main)
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[4/12] Feature branch usage${NC}"
+echo -e "${BOLD}[4/13] Feature branch usage${NC}"
 
 if echo "$BRANCH_NAME" | grep -qE '^change/CHG-[0-9]{3}'; then
   check_pass "Branch name follows convention: ${BRANCH_NAME}"
@@ -181,7 +181,7 @@ fi
 # ---------------------------------------------------------------------------
 # 5. MERGE_TRANSACTIONS.md entry
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[5/12] MERGE_TRANSACTIONS.md entry${NC}"
+echo -e "${BOLD}[5/13] MERGE_TRANSACTIONS.md entry${NC}"
 if grep -q "${CHANGE_ID}" MERGE_TRANSACTIONS.md 2>/dev/null; then
   check_pass "Entry found in MERGE_TRANSACTIONS.md"
 
@@ -206,7 +206,7 @@ fi
 # ---------------------------------------------------------------------------
 # 6. ARCHITECTURE.md updated in affected repos
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[6/12] ARCHITECTURE.md updated${NC}"
+echo -e "${BOLD}[6/13] ARCHITECTURE.md updated${NC}"
 if [ "$HAS_BACKEND" = true ]; then
   if grep -q "${CHANGE_ID}" backend/ARCHITECTURE.md 2>/dev/null; then
     check_pass "Backend ARCHITECTURE.md mentions ${CHANGE_ID}"
@@ -226,7 +226,7 @@ fi
 # ---------------------------------------------------------------------------
 # 7. CONTRACTS.md updated (if SCHEMA_CHANGE label present)
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[7/12] CONTRACTS.md (if schema change)${NC}"
+echo -e "${BOLD}[7/13] CONTRACTS.md (if schema change)${NC}"
 if echo "$CHANGELOG_SECTION" | grep -qi "SCHEMA_CHANGE"; then
   check_pass "SCHEMA_CHANGE label detected — checking CONTRACTS.md"
 
@@ -252,7 +252,7 @@ fi
 # ---------------------------------------------------------------------------
 # 8. CHANGE_MANIFEST.json updated
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[8/12] CHANGE_MANIFEST.json${NC}"
+echo -e "${BOLD}[8/13] CHANGE_MANIFEST.json${NC}"
 python3 -c "
 import json, sys
 
@@ -296,7 +296,7 @@ done
 # ---------------------------------------------------------------------------
 # 9. make check passes (backend)
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[9/12] make check — backend${NC}"
+echo -e "${BOLD}[9/13] make check — backend${NC}"
 if [ "$HAS_BACKEND" = true ]; then
   if (cd backend && make check > /dev/null 2>&1); then
     check_pass "Backend make check passed"
@@ -310,7 +310,7 @@ fi
 # ---------------------------------------------------------------------------
 # 10. make check passes (frontend)
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[10/12] make check — frontend${NC}"
+echo -e "${BOLD}[10/13] make check — frontend${NC}"
 if [ "$HAS_FRONTEND" = true ]; then
   if (cd frontend && make check > /dev/null 2>&1); then
     check_pass "Frontend make check passed"
@@ -324,7 +324,7 @@ fi
 # ---------------------------------------------------------------------------
 # 11. make dod passes (backend)
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[11/12] make dod — backend${NC}"
+echo -e "${BOLD}[11/13] make dod — backend${NC}"
 if [ "$HAS_BACKEND" = true ]; then
   if (cd backend && make dod > /dev/null 2>&1); then
     check_pass "Backend make dod passed"
@@ -338,7 +338,7 @@ fi
 # ---------------------------------------------------------------------------
 # 12. make dod passes (frontend)
 # ---------------------------------------------------------------------------
-echo -e "${BOLD}[12/12] make dod — frontend${NC}"
+echo -e "${BOLD}[12/13] make dod — frontend${NC}"
 if [ "$HAS_FRONTEND" = true ]; then
   if (cd frontend && make dod > /dev/null 2>&1); then
     check_pass "Frontend make dod passed"
@@ -347,6 +347,20 @@ if [ "$HAS_FRONTEND" = true ]; then
   fi
 else
   check_pass "Frontend not in scope — skipped"
+fi
+
+# ---------------------------------------------------------------------------
+# 13. ENGINEERING_PLAN.md version history (WARN only)
+# ---------------------------------------------------------------------------
+echo -e "${BOLD}[13/13] ENGINEERING_PLAN.md version history${NC}"
+if [ -f ENGINEERING_PLAN.md ]; then
+  if grep -q "${CHANGE_ID}" ENGINEERING_PLAN.md 2>/dev/null; then
+    check_pass "ENGINEERING_PLAN.md Version History mentions ${CHANGE_ID}"
+  else
+    check_warn "ENGINEERING_PLAN.md Version History does NOT mention ${CHANGE_ID} — update Current Statistics and add a version row"
+  fi
+else
+  check_warn "ENGINEERING_PLAN.md not found"
 fi
 
 # ---------------------------------------------------------------------------

@@ -134,3 +134,14 @@
 - **frontend_merge_commit:** df0c8869a33f03f22b94c3888478637e388b8d1f
 - **manifest_commit:** (workspace root)
 - **notes:** Frontend-only. Click suggestion card to fill competitor URL input. 5 new tests. INLINE mode. Full process followed.
+
+### TX-007 — CHG-013
+
+- **status:** COMPLETED
+- **change_id:** CHG-013
+- **backend_branch:** change/CHG-013-seo-reuse-governance
+- **frontend_branch:** change/CHG-013-seo-reuse-governance
+- **backend_merge_commit:** 04da9065e9726b0a7b0ada3edb9ff3b957f0991a
+- **frontend_merge_commit:** b8a3b1a02ac8ca319820f360b3d8988b2e071deb
+- **manifest_commit:** (workspace root)
+- **notes:** SEO pipeline reuses governance results. 8 new tests (6 BE + 2 FE). Contract 1.4.0→1.5.0. STANDARD mode. Full process followed.

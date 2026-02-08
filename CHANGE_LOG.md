@@ -37,6 +37,29 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-013: SEO pipeline reuse governance results
+
+- **Date**: 2026-02-08
+- **Status**: COMPLETE
+- **Labels**: [SCHEMA_CHANGE]
+- **Request**: When submitting the SEO report after a governance report, reuse the already-computed governance data instead of re-running all 9 governance steps (crawl, detect, PSI, etc.).
+- **Scope**: both (backend + frontend)
+- **Mode**: STANDARD
+- **Branch**: change/CHG-013-seo-reuse-governance
+- **Contract Version**: 1.4.0 → 1.5.0 (additive: optional `governance_job_id` field on `SEOReportRequest`)
+- **Stories**:
+  - [x] Cache `GovernancePipelineData` on `JobRecord` after governance pipeline completes
+  - [x] Accept optional `governance_job_id` in SEO request, skip governance steps if valid cached data exists
+  - [x] Frontend passes governance `jobId` when submitting SEO report
+  - Out of Scope: persistent caching, TTL eviction, sharing results across IPs, changing the /full endpoint
+- **Files Changed**:
+  - Backend: app/models/schemas.py, app/services/job_manager.py, app/services/pipeline.py, app/services/seo_pipeline.py, ARCHITECTURE.md, CONTRACTS.md, PROGRESS.md
+  - Frontend: src/types/api.ts, src/pages/ReportPage.tsx, src/components/CompetitorForm.tsx, ARCHITECTURE.md, CONTRACTS.md, PROGRESS.md
+- **Tests**: +8 added (6 backend + 2 frontend) → 315 BE, 161 FE, 476 total
+- **Review**: APPROVED (STANDARD — Review Agent verified 11 auto-reject triggers, backward compatibility, fallback safety, IO boundary, contract sync)
+- **DoD**: PASSED
+- **Notes**: Risk: LOW. Confidence: HIGH. Backward-compatible — fallback to full pipeline if governance_job_id missing or invalid. TDD confirmed (tests failed before implementation).
+
 ### CHG-001: Increase Pipeline Limits + Pages Analyzed CTA
 
 - **Date**: 2026-02-07

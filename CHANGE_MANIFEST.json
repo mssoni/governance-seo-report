@@ -1,12 +1,12 @@
 {
-  "contract_version": "1.4.0",
-  "last_change_id": "CHG-012",
-  "backend_commit": "34bbe4c01ec51f92bf23bde9917a254e905eb0a5",
-  "frontend_commit": "df0c8869a33f03f22b94c3888478637e388b8d1f",
+  "contract_version": "1.5.0",
+  "last_change_id": "CHG-013",
+  "backend_commit": "04da9065e9726b0a7b0ada3edb9ff3b957f0991a",
+  "frontend_commit": "b8a3b1a02ac8ca319820f360b3d8988b2e071deb",
   "compatibility": {
-    "backend_min_contract": "1.4.0",
-    "frontend_min_contract": "1.4.0"
+    "backend_min_contract": "1.5.0",
+    "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-08",
-  "notes": "CHG-012: Click competitor suggestion to fill URL input. Frontend-only UI enhancement."
+  "notes": "CHG-013: SEO pipeline reuses governance results via optional governance_job_id on SEOReportRequest."
 }

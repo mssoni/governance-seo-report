@@ -1,6 +1,43 @@
 
 # Engineering Plan: Website Governance OS + Local Competitive SEO Report
 
+> **Living document.** Zone 1 (sections above the separator) reflects current state and is updated per change.
+> Zone 2 (below the separator) is the original V1 build plan, preserved as historical record.
+> Version history is tracked in the table below; full content at any point is available via `git show <sha>:ENGINEERING_PLAN.md`.
+
+## Version History
+
+| Version | Date | Change ID | Summary |
+|---------|------|-----------|---------|
+| 1.0.0 | 2026-02-07 | V1 | All phases complete. 23 user stories, 335 tests (215 BE + 120 FE) |
+| 1.1.0 | 2026-02-07 | CHG-001 | Pipeline limits increase (timeout 90s to 180s, max pages 8 to 20) + pages_analyzed CTA. Contract 1.0.0 to 1.1.0 |
+| 1.2.0 | 2026-02-07 | CHG-003 | Pipeline timeout increased to 450s (redo of reverted CHG-002) |
+| 1.3.0 | 2026-02-07 | CHG-004 | Fix ProgressBar percentage display (0.0-1.0 scale, not 0-100) |
+| 1.4.0 | 2026-02-07 | CHG-005 | Two-view report: Business Overview (default) + Technical Details tabs. Contract 1.1.0 to 1.2.0. 38 new tests |
+| 1.5.0 | 2026-02-07 | CHG-006 | Business-goal-aware executive narrative. New business_goals.py module. 25 new tests |
+| 1.6.0 | 2026-02-07 | CHG-007 | Move CompetitorForm from Technical tab to SEO tab |
+| 1.7.0 | 2026-02-07 | CHG-008 | Suggest competitors via Google Places API. New endpoint GET /api/report/suggest-competitors. Contract 1.2.0 to 1.3.0 |
+| 1.8.0 | 2026-02-07 | CHG-009 | Demo mode (DEMO_MODE env var) for instant report generation |
+| 1.9.0 | 2026-02-07 | CHG-010 | Fix golden fixture narrative drift + drift guard test |
+| 1.10.0 | 2026-02-07 | CHG-011 | Improve competitor suggestion relevance (two-step search) + Google review card. Contract 1.3.0 to 1.4.0 |
+| 1.11.0 | 2026-02-08 | CHG-012 | Click competitor suggestion card to fill URL input |
+| 1.12.0 | 2026-02-08 | CHG-013 | SEO pipeline reuses governance results via governance_job_id. Contract 1.5.0 |
+
+## Current Statistics
+
+> Auto-verify with: `./scripts/plan_stats.sh`
+
+| Metric | Count |
+|--------|-------|
+| Backend tests | 315 |
+| Frontend tests | 161 |
+| **Total tests** | **476** |
+| API endpoints | 6 |
+| Frontend components | 22 |
+| V1 user stories | 23 |
+| Post-V1 changes | 13 (CHG-001 through CHG-013) |
+| Contract version | 1.5.0 |
+
 ## Architecture Overview
 
 ```mermaid
@@ -9,9 +46,12 @@ graph TB
         LandingPage --> InputForm
         InputForm -->|"POST /api/report/governance"| APIClient
         APIClient -->|"Poll GET /api/report/status/{job_id}"| ReportPage
-        ReportPage --> GovernanceTab
+        ReportPage --> BusinessTab
+        ReportPage --> TechnicalTab
         ReportPage --> SEOTab
         CompetitorForm -->|"POST /api/report/seo"| APIClient
+        CompetitorForm -->|"Click suggestion"| FillURL["Fill URL Input (CHG-012)"]
+        ReportPage -->|"useCompetitorSuggestions"| APIClient
     end
 
     subgraph backend [Backend - FastAPI/Python]
@@ -31,9 +71,12 @@ graph TB
         CrawlPipeline --> PSIClient
         DetectorEngine --> ReasoningEngine
         ReasoningEngine --> TemplateLibrary
-        ReasoningEngine --> FramingEngine
+        ReasoningEngine --> BusinessGoals["BusinessGoals (CHG-006)"]
         ReasoningEngine --> GeminiSummarizer
         ReasoningEngine --> ReportBuilder
+        APIRouter --> SuggestCompetitors["SuggestEndpoint (CHG-008)"]
+        SuggestCompetitors -->|"Two-step search (CHG-011)"| PlacesClient
+        APIRouter --> DemoMode["DemoFixture (CHG-009)"]
     end
 
     subgraph external [External APIs]
@@ -43,23 +86,30 @@ graph TB
     end
 ```
 
+## API Endpoints
 
+| Method | Path | Description | Added |
+|--------|------|-------------|-------|
+| GET | `/api/health` | Health check | V1 |
+| POST | `/api/report/governance` | Start governance report generation | V1 |
+| GET | `/api/report/status/{job_id}` | Poll job status + retrieve report | V1 |
+| POST | `/api/report/seo` | Start SEO competitive report generation | V1 |
+| POST | `/api/report/full` | Combined governance + SEO report | V1 |
+| GET | `/api/report/suggest-competitors` | Suggest competitors via Google Places (two-step search) | CHG-008 |
 
 ## Tech Stack Summary
-
 
 | Layer         | Choice                                                |
 | ------------- | ----------------------------------------------------- |
 | Frontend      | React 18 + Vite + TypeScript                          |
-| Styling       | Tailwind CSS + shadcn/ui                              |
+| Styling       | Tailwind CSS v4                                       |
 | FE Testing    | Vitest + React Testing Library                        |
 | Backend       | Python 3.12 + FastAPI + uvicorn                       |
 | BE Testing    | pytest + httpx (async)                                |
 | Crawling      | BeautifulSoup/lxml (primary) + Playwright (fallback)  |
 | External APIs | Google PSI API, Google Places API, Gemini 2.5 Pro     |
 | Deployment    | Railway (FE + BE as separate services)                |
-| Repos         | 2 separate git repos under `/frontend` and `/backend` |
-
+| Repos         | 2 git submodules under `/frontend` and `/backend`     |
 
 ## Polling-Based Job Flow
 
@@ -89,7 +139,13 @@ sequenceDiagram
 end
 ```
 
+---
+---
 
+# Zone 2: Historical V1 Build Plan
+
+> Everything below this line is the **original V1 build plan** and is preserved as a historical record.
+> It is NOT updated with post-V1 changes. For current state, see the sections above.
 
 ---
 
@@ -1781,43 +1837,13 @@ They work in the same `/backend/` repo, using CURRENT_TASKS.md to avoid collisio
 
 ---
 
-## Project Complete ✅
+## V1 Completion Record
 
-**Status:** All phases complete. All user stories delivered.
+> This section captures the state at V1 completion (2026-02-07). For current statistics, see the **Current Statistics** table at the top of this file.
 
-### Final Statistics
-
-- **Total User Stories:** 23 (Backend: 12, Frontend: 11)
-- **Total Tests:** 335 (Backend: 215, Frontend: 120)
+- **V1 User Stories:** 23 (Backend: 12, Frontend: 11)
+- **V1 Tests at completion:** 335 (Backend: 215, Frontend: 120)
 - **Phases Completed:** 4 (Phase 0: Bootstrap, Phase 1: Foundation, Phase 2: Core Engine, Phase 3: SEO Module, Phase 4: Integration & Polish)
-
-### Phase 4 Completion Summary
-
-**Backend (11 tests):**
-- CORS configuration (3 tests)
-- US-9.2: Error handling hardening (5 tests)
-- POST /api/report/full combined endpoint (3 tests)
-
-**Frontend (21 tests):**
-- US-9.1: Analytics instrumentation (7 tests)
-- US-9.2: Error handling & edge cases (8 tests)
-- US-9.3: Print-friendly styling (0 tests, CSS-only)
-- API wiring to real backend (6 tests)
-
-### Integration Fix Applied
-
-An integration fix was applied to `frontend/src/pages/LandingPage.tsx` — the navigate call now passes all form data (url, location, business_type, intent) as query params to the report page, so the CompetitorForm can access them for SEO report submission.
-
-### Deliverables
-
-✅ Complete backend API with governance and SEO report generation  
-✅ Complete frontend UI with governance and SEO report views  
-✅ Full test coverage (335 tests across backend and frontend)  
-✅ Integration between frontend and backend  
-✅ Error handling and edge case coverage  
-✅ Analytics instrumentation  
-✅ Print-friendly styling  
-✅ Comprehensive documentation
-
-**Project Status:** Ready for deployment and production use.
+- **V1 Status:** All phases complete. All user stories delivered.
+- **Post-V1 changes:** Tracked in `CHANGE_LOG.md` and the Version History table above.
 
