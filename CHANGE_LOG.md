@@ -266,7 +266,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 - **Date**: 2026-02-07
 - **Status**: COMPLETE
-- **Labels**: [SCHEMA_CHANGE]
+- **Labels**: [SCHEMA_CHANGE] [PROCESS_VIOLATION]
 - **Request**: Competitor suggestions for skinsureclinic.com returned generic medical clinics instead of dermatology clinics. Need more relevant competitors based on actual business specialty, area-aware search, and a Google review card for the user's clinic.
 - **Scope**: both
 - **Mode**: STANDARD
@@ -287,3 +287,31 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (STANDARD — orchestrator review, all checks green)
 - **DoD**: PASSED
 - **Notes**: Risk: MEDIUM (IO module + schema change). Confidence: HIGH. Root cause: suggest endpoint mapped "clinic" → "medical clinic" generically instead of using the website's actual Google Place types (e.g., "dermatologist"). Two-step search now: (1) find user's business by domain, (2) use its specific types for competitor search. Out of scope: changing PlacesClient internals, modifying SEO pipeline, adding new API endpoints.
+- **Process Violations** (retroactive audit):
+  1. No feature branches created in submodules — committed directly to main
+  2. No `--no-ff` merge commits — fast-forward commits on main
+  3. No MERGE_TRANSACTIONS.md entry logged
+  4. No Review Agent spawned despite STANDARD mode declaration
+  5. No TDD fail-first evidence shown
+  - **Remediation**: `validate_change.sh` script created to prevent recurrence
+
+### CHG-012: Click competitor suggestion to fill URL input
+
+- **Date**: 2026-02-08
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: When clicking a competitor suggestion card, fill the next empty competitor URL input with the card's website URL. If no website URL, show "This business has no website" message.
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-012-click-suggestion-fill-url
+- **Contract Version**: (unchanged, 1.4.0)
+- **Stories**:
+  - [ ] Click suggestion card with website_url → fill next empty competitor URL field
+  - [ ] Click suggestion card without website_url → show "no website" message
+  - Out of Scope: changing suggestion API, drag-and-drop, suggestion card layout redesign, allowing >3 competitors
+- **Files Changed**:
+  - Frontend: src/components/CompetitorForm.tsx, src/components/__tests__/competitor-suggestions.test.tsx, ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +5 added (159 frontend total)
+- **Review**: APPROVED (INLINE — orchestrator review, all 11 triggers pass, make check + make dod green)
+- **DoD**: PASSED
+- **Notes**: Risk: LOW. Confidence: HIGH. Pure UI interaction — no API/schema/IO changes. TDD confirmed (5 tests failed before implementation).

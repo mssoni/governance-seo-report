@@ -14,77 +14,200 @@ Activate this process when the user's message implies a change to the codebase:
 - "I want to ...", "Can you ...", "We need ..."
 - Bug reports, feature requests, UI tweaks, API changes
 
-## Workflow
+## ⛔ ABSOLUTE INVARIANTS — NEVER VIOLATE THESE
 
-### DECOMPOSE (7 sub-steps)
-1. Read `CHANGE_PROCESS.md` for the full lifecycle
-2. Read `CHANGE_MANIFEST.json` for current contract version, commit SHAs, and compatibility matrix
-3. Read `backend/ARCHITECTURE.md` and `frontend/ARCHITECTURE.md` for current state
-4. Read `backend/CONTRACTS.md` if the change may affect API schemas
-5. **Pre-flight invariant check:** Does this violate a V1 non-goal or core constraint? (See §3.1) If yes → `NEEDS_PRODUCT_DECISION` before stories
-6. **Outcome framing:** What metric does this affect? Is the request a means or an end? Is there a cheaper way? (See §3.2) Escalate only if wrong metric or high complexity / low impact
-7. Decompose into stories using the Story Template (§3.3): risk level, mandatory out-of-scope, optional "unlocks later"
-8. **Confidence signal:** Rate HIGH/MEDIUM/LOW — if LOW, bias toward smaller stories
-9. Run `./scripts/new_change_id.sh` to allocate the next Change ID (CHG-NNN)
-10. Log the change in `CHANGE_LOG.md` as Status: IN_PROGRESS (with Labels if applicable)
-11. **Select execution mode** (see §2.1 in CHANGE_PROCESS.md):
-    - Evaluate INLINE criteria: no schema/contract change, no new files, no IO/security/pipeline module touched, single-repo only, config/copy/style changes only
-    - If ALL criteria met → **INLINE** (orchestrator develops + reviews directly)
-    - If ANY criterion fails → **STANDARD** (spawn dev agent(s) + review agent)
-    - Record mode in CHANGE_LOG.md entry
+These rules are NON-NEGOTIABLE. They apply to EVERY change, regardless of size, mode, or urgency.
+If you are about to violate any of these, STOP and re-read this rule file.
 
-### DEVELOP + REVIEW + MERGE
+1. **NEVER commit directly to main in any submodule.** Always create a feature branch first.
+2. **NEVER merge without `--no-ff`.** Every merge must create a merge commit for traceability.
+3. **NEVER skip MERGE_TRANSACTIONS.md.** Log STARTED before merge, COMPLETED after.
+4. **NEVER write implementation code before writing failing tests** (unless pure config/copy change).
+5. **NEVER merge without running `./scripts/validate_change.sh CHG-NNN`** — if it fails, FIX the violations first.
+6. **NEVER skip the DECOMPOSE output.** The user must see preflight, outcome, stories, confidence, and mode BEFORE any code is written.
+7. **ALWAYS use TodoWrite with `proc-*` IDs** to track every process step. Mark each step completed only after it's actually done.
 
-**STANDARD mode (spawn agents):**
-12. Create feature branches: `change/CHG-NNN-short-description` (uppercase CHG)
-13. Spawn dev agents in parallel using the Task tool (backend + frontend, or just one)
-14. After dev agents complete, spawn a review agent
-15. Review Agent reports APPROVED/REJECTED (does NOT merge)
+## CRITICAL: Step-Tracking Enforcement
 
-**INLINE mode (orchestrator executes directly):**
-12. Create feature branch: `change/CHG-NNN-short-description`
-13. Orchestrator develops directly — TDD still required (test first → fail → implement → pass)
-14. Orchestrator reviews inline — run `make check` + `make dod` + inspect `git diff main`
-15. If any INLINE criteria are violated during execution (change unexpectedly touches schema/IO/security/cross-repo):
-    - STOP inline execution
-    - Add `[MODE_ESCALATION]` label to CHANGE_LOG
-    - Continue in STANDARD mode (spawn agents)
+**Before writing ANY code**, you MUST:
+1. Create a TodoWrite with ALL process steps listed below (prefix IDs with `proc-`)
+2. Output a "DECOMPOSE" section to the user showing pre-flight, outcome framing, stories, confidence, and mode selection BEFORE touching any files
+3. Mark each `proc-*` todo as completed only AFTER executing that step
+4. NEVER skip a step — if a step doesn't apply, mark it completed with a note explaining why
 
-**Both modes — merge gate:**
-16. If approved: orchestrator runs merge gate:
-    a. Verify `make check` green in affected repo(s)
-    b. Verify `make dod` green in affected repo(s)
-    c. Verify CHANGE_LOG.md entry is complete
-    d. Verify no unresolved NEEDS_PRODUCT_DECISION labels
-17. Atomic cross-repo merge (always `--no-ff`, never squash):
-    a. Append STARTED entry to `MERGE_TRANSACTIONS.md`
-    b. Merge backend branch to main: `git merge --no-ff change/CHG-NNN-...` (if changed)
-    c. Merge frontend branch to main: `git merge --no-ff change/CHG-NNN-...` (if changed)
-    d. If (c) fails → revert (b), log ROLLED_BACK in `MERGE_TRANSACTIONS.md`, mark PARTIAL_MERGE_BLOCKED
-    e. Only after both succeed: update `CHANGE_MANIFEST.json` with both merge commit SHAs
-    f. Log COMPLETED in `MERGE_TRANSACTIONS.md`
-18. Update `CHANGE_LOG.md` status to COMPLETE
-19. Report summary to user
+**If you find yourself writing code before completing `proc-decompose`, STOP and restart.**
+
+## Mandatory Process Steps (create as todos)
+
+```
+proc-context      | Read CHANGE_PROCESS.md, CHANGE_MANIFEST.json, ARCHITECTURE.md (both), CONTRACTS.md
+proc-preflight    | Pre-flight invariant check: output "PREFLIGHT: PASS/FAIL — [reason]"
+proc-outcome      | Outcome framing: output "OUTCOME: metric=[X], means-vs-end=[X], cheaper-way=[yes/no]"
+proc-stories      | Story formation with Risk Level + Out of Scope per story
+proc-confidence   | Output "CONFIDENCE: HIGH/MEDIUM/LOW — [reason]"
+proc-allocate     | Run new_change_id.sh, log CHANGE_LOG.md as IN_PROGRESS
+proc-mode         | Output "MODE: INLINE/STANDARD" with criteria evaluation table
+proc-branch       | Create feature branch(es) in EACH affected submodule + parent
+proc-tdd-tests    | Write tests FIRST — run them, show they FAIL (paste terminal output)
+proc-tdd-impl     | Implement — run tests, show they PASS (paste terminal output)
+proc-make-check   | Run make check in ALL affected repos — paste result
+proc-docs         | Update ARCHITECTURE.md, CONTRACTS.md, PROGRESS.md in ALL affected repos
+proc-dod          | Run make dod in ALL affected repos — paste result
+proc-review       | STANDARD: spawn Review Agent. INLINE: run review inline (git diff main, 11 triggers)
+proc-validate     | Run ./scripts/validate_change.sh CHG-NNN — MUST PASS before merge
+proc-merge-gate   | Verify: make check green, make dod green, validate green, CHANGE_LOG complete
+proc-merge-tx     | Log STARTED in MERGE_TRANSACTIONS.md BEFORE merging
+proc-merge-exec   | In each submodule: git checkout main && git merge --no-ff change/CHG-NNN-desc
+proc-manifest     | Update CHANGE_MANIFEST.json with merge commit SHAs
+proc-merge-done   | Log COMPLETED in MERGE_TRANSACTIONS.md, update CHANGE_LOG status to COMPLETE
+proc-report       | Report summary to user
+```
+
+## Workflow Details
+
+### DECOMPOSE — Output to User BEFORE Coding
+
+You MUST output a visible "DECOMPOSE" block to the user like this:
+
+```
+## CHG-NNN: [Title]
+
+**PREFLIGHT**: PASS — does not violate V1 non-goals or core invariants
+**OUTCOME**: metric=conversion/reliability/speed/trust, means-vs-end=end, cheaper-way=no
+**CONFIDENCE**: HIGH/MEDIUM/LOW — [reason]
+
+### Stories
+1. [Story title] — Risk: LOW/MEDIUM/HIGH
+   - Out of Scope: [at least 1 item]
+   - Unlocks Later: [optional]
+2. ...
+
+**MODE**: INLINE/STANDARD
+| Criterion | Value | Result |
+|-----------|-------|--------|
+| Schema/contract change? | yes/no | ... |
+| New files created? | yes/no | ... |
+| IO/security/pipeline module touched? | yes/no | ... |
+| Single-repo only? | yes/no | ... |
+| Config/copy/style only? | yes/no | ... |
+→ All criteria met = INLINE. Any fails = STANDARD.
+```
+
+Only after outputting this block AND logging CHANGE_LOG.md as IN_PROGRESS may you begin coding.
+
+### BRANCH — Feature Branches in EVERY Submodule
+
+⛔ **STOP AND CHECK**: Are you about to commit to `main`? If yes, you are violating the process.
+
+```bash
+# In EACH affected submodule (backend/, frontend/):
+cd backend && git checkout -b change/CHG-NNN-desc
+cd ../frontend && git checkout -b change/CHG-NNN-desc
+# In parent workspace:
+git checkout -b change/CHG-NNN-desc
+```
+
+Every submodule MUST have its own feature branch. Never commit directly to main.
+
+### DEVELOP (TDD)
+
+**Test-first is mandatory in both modes:**
+1. Write test(s) FIRST
+2. Run them — they MUST fail (paste terminal output showing failure)
+3. Write implementation
+4. Run them — they MUST pass (paste terminal output showing success)
+5. Run `make check` in affected repo(s)
+
+If you cannot demonstrate fail-first (e.g., pure config change), document why in the todo note.
+
+⛔ **STOP AND CHECK**: Did you paste the failing test output? If not, go back and run the tests.
+
+### REVIEW
+
+**STANDARD mode**: Spawn a Review Agent using the Task tool. The Review Agent:
+- Runs `make check` + `make dod`
+- Inspects `git diff main`
+- Checks 11 auto-reject triggers from DEFINITION_OF_DONE.md
+- Reports APPROVED/REJECTED (does NOT merge)
+
+**INLINE mode**: Orchestrator runs the same checks inline. No agent spawn needed.
+
+### PRE-MERGE VALIDATION — HARD GATE
+
+⛔ **STOP AND CHECK**: Run the validation script. If it fails, you MUST fix all violations before merging.
+
+```bash
+./scripts/validate_change.sh CHG-NNN
+```
+
+This script checks 12 items:
+1. CHANGE_LOG.md entry exists with all required fields
+2. Status is IN_PROGRESS or COMPLETE
+3. Mode is INLINE or STANDARD
+4. Scope detection (backend/frontend/both)
+5. Feature branch exists (not direct commit to main)
+6. MERGE_TRANSACTIONS.md entry exists
+7. ARCHITECTURE.md updated in affected repos
+8. CONTRACTS.md updated (if SCHEMA_CHANGE)
+9. CHANGE_MANIFEST.json updated
+10. make check passes in affected repos
+11. make dod passes in affected repos
+
+**If validate_change.sh returns exit code 1, DO NOT MERGE.** Fix every FAIL item first.
+
+### MERGE (Atomic Cross-Repo Protocol)
+
+⛔ **STOP AND CHECK**: Did `validate_change.sh` pass? If not, go fix violations first.
+
+**Merge sequence (always --no-ff, never squash):**
+1. Log STARTED in MERGE_TRANSACTIONS.md with the TX entry template
+2. In each submodule: `git checkout main && git merge --no-ff change/CHG-NNN-desc`
+3. Commit message: `merge(CHG-NNN): short description`
+4. If any submodule merge fails: revert all, log ROLLED_BACK
+5. Update CHANGE_MANIFEST.json with merge commit SHAs from each submodule
+6. Log COMPLETED in MERGE_TRANSACTIONS.md
+7. Update CHANGE_LOG.md status to COMPLETE
+
+```bash
+# Example merge sequence:
+cd backend
+git checkout main
+git merge --no-ff change/CHG-NNN-desc -m "merge(CHG-NNN): short description"
+BACKEND_SHA=$(git rev-parse HEAD)
+
+cd ../frontend
+git checkout main
+git merge --no-ff change/CHG-NNN-desc -m "merge(CHG-NNN): short description"
+FRONTEND_SHA=$(git rev-parse HEAD)
+
+# Update CHANGE_MANIFEST.json with $BACKEND_SHA and $FRONTEND_SHA
+```
 
 ## Rules
 
-- **ALL 8 STEPS, EVERY TIME.** No step is ever skipped. What changes is the execution mode (INLINE vs STANDARD), which controls *how* steps 3–6 execute, not *whether* they run.
-- **Risk is determined by what you touch, not by how much you change.** Mode selection uses objective surface-type criteria (paths, module types, schema impact), never perceived complexity or diff size.
-- **INLINE mode is single-brain execution, not a quick hack.** All gates still apply: TDD, `make check`, `make dod`, doc updates, merge protocol.
+- **ALL STEPS, EVERY TIME.** No step is ever skipped. What changes is the execution mode (INLINE vs STANDARD), not whether steps run.
+- **Risk is determined by what you touch, not by how much you change.** Mode selection uses objective surface-type criteria.
+- **INLINE mode is single-brain execution, not a quick hack.** All gates still apply: TDD, make check, make dod, validate_change.sh, doc updates, merge protocol.
 - Never ask the user for permission to proceed — execute autonomously (unless NEEDS_PRODUCT_DECISION)
-- Always run pre-flight invariant check before writing stories (§3.1)
-- Always run outcome framing internally — escalate only if wrong metric or high complexity/low impact
-- Always assign Risk Level (LOW/MEDIUM/HIGH) and at least 1 Out of Scope item per story
-- Always output Confidence Signal (HIGH/MEDIUM/LOW) before selecting mode
 - Always use TDD (test first, then implement) — in both INLINE and STANDARD modes
 - Always run `make check` + `make dod` before and after changes
-- Always update documentation (ARCHITECTURE.md, PROGRESS.md, CURRENT_TASKS.md)
-- Always run `make dod` + `DEFINITION_OF_DONE.md` checklist before merge
+- Always run `./scripts/validate_change.sh CHG-NNN` before merging
 - In STANDARD mode: always spawn a Review Agent — no change merges without review
-- In INLINE mode: orchestrator reviews directly — same checks, no agent spawn
 - Use Contract-First if any API schema changes — bump contract_version
 - Follow naming: `CHG-NNN` uppercase everywhere, branch `change/CHG-NNN-desc`
 - IO boundary: only designated fetch modules may do HTTP
 - Review (agent or inline) approves but does NOT merge — orchestrator handles merge gate
-- When ambiguity arises, apply Global Default Behavior Rules (§3.6): prefer additive, readable, safe, explicit, simple, contained
 - No effort estimates, time estimates, or story points — this process is outcome-driven
+
+## Common Mistakes to Avoid
+
+These are mistakes that have actually happened. Read them carefully.
+
+1. **Committing directly to main in submodules** — ALWAYS create `change/CHG-NNN-*` branch first
+2. **Forgetting MERGE_TRANSACTIONS.md** — Log STARTED *before* merge, COMPLETED *after*
+3. **Skipping the Review Agent in STANDARD mode** — If Mode=STANDARD, you MUST spawn a review agent
+4. **Not showing failing tests** — Paste the actual test failure output, not just "tests written"
+5. **Forgetting to run validate_change.sh** — This is your final safety net. Never skip it.
+6. **Silent decomposition** — The user must SEE the DECOMPOSE block. Don't do it silently.
+7. **Merging with fast-forward** — ALWAYS use `--no-ff`. This creates a merge commit for audit trail.
+8. **Not updating ARCHITECTURE.md** — Every change that touches code must update the relevant ARCHITECTURE.md

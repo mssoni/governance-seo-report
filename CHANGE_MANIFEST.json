@@ -1,12 +1,12 @@
 {
   "contract_version": "1.4.0",
-  "last_change_id": "CHG-011",
+  "last_change_id": "CHG-012",
   "backend_commit": "34bbe4c01ec51f92bf23bde9917a254e905eb0a5",
-  "frontend_commit": "54420cfe30cef747ab8f86487f519e35f73a10c6",
+  "frontend_commit": "df0c8869a33f03f22b94c3888478637e388b8d1f",
   "compatibility": {
     "backend_min_contract": "1.4.0",
     "frontend_min_contract": "1.4.0"
   },
-  "updated_at": "2026-02-07",
-  "notes": "CHG-011: Improve competitor suggestions — two-step search, user_place for review card, websiteUri extraction."
+  "updated_at": "2026-02-08",
+  "notes": "CHG-012: Click competitor suggestion to fill URL input. Frontend-only UI enhancement."
 }
