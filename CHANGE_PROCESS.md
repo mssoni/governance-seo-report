@@ -173,8 +173,9 @@ User Prompt
 │ - Orchestrator verifies:                            │
 │   1. `make check` green in both repos               │
 │   2. `make dod` green in both repos                 │
-│   3. CHANGE_LOG.md entry is complete                 │
-│   4. No NEEDS_PRODUCT_DECISION items unresolved     │
+│   3. `./scripts/validate_change.sh CHG-NNN` passes  │
+│   4. CHANGE_LOG.md entry is complete                 │
+│   5. No NEEDS_PRODUCT_DECISION items unresolved     │
 │ - Merge strategy: ALWAYS merge commit (--no-ff)     │
 │   No squash merges. No rebases onto main.           │
 │   This ensures every merge is revertible with a     │

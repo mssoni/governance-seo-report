@@ -112,3 +112,25 @@
 - **frontend_merge_commit:** 37f5aefcd1a524d8107583d250b9b47db7812280
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. Fix golden fixture narrative drift. 1 new drift guard test. Process update: DEFINITION_OF_DONE.md. INLINE mode.
+
+### TX-2026-02-07-011 — CHG-011 [PROCESS_VIOLATION]
+
+- **status:** COMPLETED (retroactive — logged after audit)
+- **change_id:** CHG-011
+- **backend_branch:** n/a (VIOLATION: committed directly to main, no feature branch)
+- **frontend_branch:** n/a (VIOLATION: committed directly to main, no feature branch)
+- **backend_merge_commit:** 34bbe4c01ec51f92bf23bde9917a254e905eb0a5 (direct commit, not --no-ff merge)
+- **frontend_merge_commit:** 54420cfe30cef747ab8f86487f519e35f73a10c6 (direct commit, not --no-ff merge)
+- **manifest_commit:** (workspace root)
+- **notes:** RETROACTIVE ENTRY. CHG-011 was executed without proper merge protocol: no submodule feature branches, no --no-ff merge, no MERGE_TRANSACTIONS entry, no Review Agent despite STANDARD mode. Code is functional and tests pass, but process was violated. Remediated by creating validate_change.sh enforcement script and hardening change-agent.mdc rule.
+
+### TX-2026-02-08-012 — CHG-012
+
+- **status:** COMPLETED
+- **change_id:** CHG-012
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-012-click-suggestion-fill-url
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** df0c8869a33f03f22b94c3888478637e388b8d1f
+- **manifest_commit:** (workspace root)
+- **notes:** Frontend-only. Click suggestion card to fill competitor URL input. 5 new tests. INLINE mode. Full process followed.

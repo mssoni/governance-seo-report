@@ -151,7 +151,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 ### CHG-006: Business-Goal-Aware Executive Narrative
 
 - **Date**: 2026-02-07
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETE
 - **Labels**: (none)
 - **Request**: Rewrite executive narrative to frame findings around predicted business goals (e.g., "more patients" for clinics) instead of citing technical issue titles. Never mention technical jargon — only business outcomes on/off track.
 - **Scope**: backend-only
@@ -261,3 +261,57 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (INLINE)
 - **DoD**: PASSED
 - **Notes**: Root cause — CHG-006 changed narrative generation but did not update golden fixtures. New drift guard test prevents recurrence. New DoD section "Golden Fixtures" added.
+
+### CHG-011: Improve competitor suggestion relevance + Google review card
+
+- **Date**: 2026-02-07
+- **Status**: COMPLETE
+- **Labels**: [SCHEMA_CHANGE] [PROCESS_VIOLATION]
+- **Request**: Competitor suggestions for skinsureclinic.com returned generic medical clinics instead of dermatology clinics. Need more relevant competitors based on actual business specialty, area-aware search, and a Google review card for the user's clinic.
+- **Scope**: both
+- **Mode**: STANDARD
+- **Branch**: change/CHG-011-improve-competitor-suggestions
+- **Contract Version**: v1.3.0 → v1.4.0 (additive — new `user_place` field on SuggestCompetitorsResponse)
+- **Stories**:
+  - [x] Backend: Two-step search — find user's place on Google Places by domain → extract specific types + area → search for competitors with those types near that area
+  - [x] Backend: Add `user_place` to `SuggestCompetitorsResponse` schema
+  - [x] Backend: Add `websiteUri` to PlacesClient field mask + `website_url` to PlaceResult
+  - [x] Backend: Filter out user's own place from competitor results (by place_id + domain)
+  - [x] Frontend: Pass `websiteUrl` to `useCompetitorSuggestions` hook → API
+  - [x] Frontend: Display Google Business Profile review card for user's clinic
+  - [x] Frontend: Update types, api-client, hook for new response shape
+- **Files Changed**:
+  - Backend: app/api/suggest.py (rewritten), app/models/schemas.py, app/services/places_client.py, tests/test_suggest_competitors.py (rewritten, 22 tests), CONTRACTS.md, ARCHITECTURE.md
+  - Frontend: src/types/api.ts, src/services/api-client.ts, src/hooks/useCompetitorSuggestions.ts, src/components/CompetitorForm.tsx, src/pages/ReportPage.tsx, src/components/__tests__/competitor-suggestions.test.tsx (8 tests), CONTRACTS.md, ARCHITECTURE.md
+- **Tests**: +16 backend (309 total), +4 frontend (154 total)
+- **Review**: APPROVED (STANDARD — orchestrator review, all checks green)
+- **DoD**: PASSED
+- **Notes**: Risk: MEDIUM (IO module + schema change). Confidence: HIGH. Root cause: suggest endpoint mapped "clinic" → "medical clinic" generically instead of using the website's actual Google Place types (e.g., "dermatologist"). Two-step search now: (1) find user's business by domain, (2) use its specific types for competitor search. Out of scope: changing PlacesClient internals, modifying SEO pipeline, adding new API endpoints.
+- **Process Violations** (retroactive audit):
+  1. No feature branches created in submodules — committed directly to main
+  2. No `--no-ff` merge commits — fast-forward commits on main
+  3. No MERGE_TRANSACTIONS.md entry logged
+  4. No Review Agent spawned despite STANDARD mode declaration
+  5. No TDD fail-first evidence shown
+  - **Remediation**: `validate_change.sh` script created to prevent recurrence
+
+### CHG-012: Click competitor suggestion to fill URL input
+
+- **Date**: 2026-02-08
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: When clicking a competitor suggestion card, fill the next empty competitor URL input with the card's website URL. If no website URL, show "This business has no website" message.
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-012-click-suggestion-fill-url
+- **Contract Version**: (unchanged, 1.4.0)
+- **Stories**:
+  - [ ] Click suggestion card with website_url → fill next empty competitor URL field
+  - [ ] Click suggestion card without website_url → show "no website" message
+  - Out of Scope: changing suggestion API, drag-and-drop, suggestion card layout redesign, allowing >3 competitors
+- **Files Changed**:
+  - Frontend: src/components/CompetitorForm.tsx, src/components/__tests__/competitor-suggestions.test.tsx, ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +5 added (159 frontend total)
+- **Review**: APPROVED (INLINE — orchestrator review, all 11 triggers pass, make check + make dod green)
+- **DoD**: PASSED
+- **Notes**: Risk: LOW. Confidence: HIGH. Pure UI interaction — no API/schema/IO changes. TDD confirmed (5 tests failed before implementation).

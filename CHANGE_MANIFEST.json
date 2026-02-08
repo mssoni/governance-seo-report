@@ -1,12 +1,12 @@
 {
-  "contract_version": "1.3.0",
-  "last_change_id": "CHG-010",
-  "backend_commit": "a20049ab19e7ee714be7279ac6621973ce2a6171",
-  "frontend_commit": "37f5aefcd1a524d8107583d250b9b47db7812280",
+  "contract_version": "1.4.0",
+  "last_change_id": "CHG-012",
+  "backend_commit": "34bbe4c01ec51f92bf23bde9917a254e905eb0a5",
+  "frontend_commit": "df0c8869a33f03f22b94c3888478637e388b8d1f",
   "compatibility": {
-    "backend_min_contract": "1.3.0",
-    "frontend_min_contract": "1.3.0"
+    "backend_min_contract": "1.4.0",
+    "frontend_min_contract": "1.4.0"
   },
-  "updated_at": "2026-02-07",
-  "notes": "CHG-010: Fix golden fixture narrative drift — business language, drift guard test."
+  "updated_at": "2026-02-08",
+  "notes": "CHG-012: Click competitor suggestion to fill URL input. Frontend-only UI enhancement."
 }

@@ -67,6 +67,13 @@
 - [ ] Max pages cap enforced (hard limit, test exists) **[H]** _(test suite)_
 - [ ] Per-domain rate limit / concurrency cap enforced **[R]**
 
+### Process Compliance (added CHG-012)
+
+- [ ] `./scripts/validate_change.sh CHG-NNN` passes (exit code 0) **[H]**
+- [ ] Feature branches created in EACH affected submodule (not direct commits to main) **[H]** _(validate_change.sh)_
+- [ ] `MERGE_TRANSACTIONS.md` entry logged (STARTED before merge, COMPLETED after) **[H]** _(validate_change.sh)_
+- [ ] Merge uses `--no-ff` flag (creates merge commit, not fast-forward) **[H]** _(validate_change.sh)_
+
 ## Auto-Reject Triggers (11 deterministic rules)
 
 If ANY of these are true, the Review Agent MUST reject immediately:
