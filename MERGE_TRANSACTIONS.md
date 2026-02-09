@@ -159,12 +159,12 @@
 
 ### TX-2026-02-09-015 — CHG-015
 
-- **status:** STARTED
+- **status:** COMPLETED
 - **change_id:** CHG-015
 - **backend_branch:** change/CHG-015-phase1-pipeline-integration
 - **frontend_branch:** change/CHG-015-phase1-pipeline-integration
-- **backend_merge_commit:** (pending)
-- **frontend_merge_commit:** (pending)
-- **manifest_commit:** (pending)
-- **notes:** Phase 1 Foundation Signals pipeline integration. 5 reasoning templates + issue builder integration + 4 detectors wired into pipeline + golden fixtures updated. STANDARD mode.
+- **backend_merge_commit:** 44b98792f7f35757cb4ce9517afbf7f6a0df85aa
+- **frontend_merge_commit:** 063fe3c3db09cca23893d37ac22619e0f1938431
+- **manifest_commit:** (workspace root)
+- **notes:** Phase 1 Foundation Signals pipeline integration. 5 reasoning templates + issue builder integration + 4 detectors wired into pipeline + golden fixtures updated. STANDARD mode. 9 new tests (378 backend total). Contract 1.6.0 (no change). Atomic --no-ff merge successful in both repos.
 
