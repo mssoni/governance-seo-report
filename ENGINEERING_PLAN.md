@@ -24,6 +24,8 @@
 | 1.12.0 | 2026-02-08 | CHG-013 | SEO pipeline reuses governance results via governance_job_id. Contract 1.4.0 to 1.5.0 |
 | 1.13.0 | 2026-02-09 | CHG-014 | Phase 1 Foundation Signals. 5 new detector/analyzer modules + 15 new GovernanceReport fields. Contract 1.5.0 to 1.6.0. 54 new tests |
 | 1.14.0 | 2026-02-09 | CHG-015 | Phase 1 Pipeline Integration (completes CHG-014). 5 reasoning templates + issue builder integration + pipeline wiring. 9 new tests |
+| 1.15.0 | 2026-02-09 | CHG-016 | Business-first confidence filtering for Foundation Signals. Frontend-only. 4 tests updated |
+| 1.16.0 | 2026-02-09 | CHG-017 | Playwright CDP fallback for PSI API failures. New cdp_perf_client.py + psi_client.py fallback. 21 new tests |
 
 ## Current Statistics
 
@@ -31,13 +33,13 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 378 |
+| Backend tests | 395 |
 | Frontend tests | 161 |
-| **Total tests** | **539** |
+| **Total tests** | **556** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 15 (CHG-001 through CHG-015) |
+| Post-V1 changes | 17 (CHG-001 through CHG-017) |
 | Contract version | 1.6.0 |
 
 ## Architecture Overview

@@ -1,12 +1,12 @@
 {
   "contract_version": "1.6.0",
-  "last_change_id": "CHG-015",
-  "backend_commit": "9b76ff2ec59feb556b91479c8fede805e0e911c0",
-  "frontend_commit": "7c9870d9157e6063376284374324f3f61785c085",
+  "last_change_id": "CHG-017",
+  "backend_commit": "0e3ee1faa9bc07e41b76b0a8ea3b3b5aae72e102",
+  "frontend_commit": "8116de54ff6afabb1956d16e8e17cb6dcf239c74",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-09",
-  "notes": "CHG-015: Phase 1 Pipeline Integration (completes CHG-014) - added 5 reasoning templates + issue builder integration + pipeline wiring. Contract 1.6.0 (no change). 9 new tests (378 backend total)."
+  "notes": "CHG-017: Playwright CDP fallback for PSI API failures. New cdp_perf_client.py + psi_client.py fallback. 21 new tests. Backend-only, no contract change."
 }

@@ -168,3 +168,25 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Phase 1 Foundation Signals pipeline integration. 5 reasoning templates + issue builder integration + 4 detectors wired into pipeline + golden fixtures updated. STANDARD mode. 9 new tests (378 backend total). Contract 1.6.0 (no change). Atomic --no-ff merge successful in both repos.
 
+### TX-2026-02-09-016 — CHG-016
+
+- **status:** COMPLETED
+- **change_id:** CHG-016
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-016-business-first-view
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** 8116de54ff6afabb1956d16e8e17cb6dcf239c74
+- **manifest_commit:** (workspace root)
+- **notes:** Business-first confidence filtering for Foundation Signals. Business Overview filters issues to show only HIGH confidence + OBSERVED. BusinessImpactCategories redesigned: leads with business impact messaging, "We observed" section, subtle confidence indicators. INLINE mode. Frontend-only. 4 tests updated. Contract 1.6.0 (no change).
+
+### TX-2026-02-09-017 — CHG-017
+
+- **status:** COMPLETED
+- **change_id:** CHG-017
+- **backend_branch:** change/CHG-017-cdp-psi-fallback
+- **frontend_branch:** n/a
+- **backend_merge_commit:** 0e3ee1f
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Playwright CDP fallback for PSI API failures. 21 new tests (15 CDP + 6 fallback). Contract 1.6.0 (no change). STANDARD mode. Atomic --no-ff merge successful.
+

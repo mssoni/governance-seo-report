@@ -37,6 +37,30 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-017: Playwright CDP fallback for PSI API failures
+
+- **Date**: 2026-02-09
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: When PSI API fails for a site (e.g., NO_FCP error), fall back to local Playwright CDP-based performance measurement so reports always have performance data.
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-017-cdp-psi-fallback
+- **Contract Version**: 1.6.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: CDP performance measurement module (cdp_perf_client.py)
+  - [x] Story 2: PSI client CDP integration (fallback in psi_client.py)
+  - [x] Story 3: Verify transparent integration
+  - Out of Scope: Network/CPU throttling, Speed Index, persistent browser pools, screenshots, making CDP primary, separate CDP timeout config, E2E testing against real sites
+- **Files Changed**:
+  - Backend: app/services/cdp_perf_client.py (new), app/services/psi_client.py (modified), tests/test_cdp_perf_client.py (new), tests/test_psi_client.py (modified)
+- **Tests**: +21 added (15 CDP + 6 fallback), 0 modified → 395 BE total
+- **Review**: APPROVED (inline review — all 11 auto-reject triggers pass)
+- **DoD**: PASSED (`make dod` green — all 7 checks)
+- **Notes**: PSI API returns NO_FCP for sites like vanillasmiles.dental where Google's Lighthouse servers can't render the page. CDP fallback uses local headless Chromium.
+
+---
+
 ### CHG-013: SEO pipeline reuse governance results
 
 - **Date**: 2026-02-08
@@ -415,4 +439,26 @@ As a governance-focused user, I want to see issues surfaced when my site has sta
 **DoD**: PASSED
 **Merge Commit**: (backend: pending, frontend: pending)
 **Completion Date**: 2026-02-09
+
+
+### CHG-016: Business-First Foundation Signals View
+
+- **Date**: 2026-02-09
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Show ONLY high-confidence observed issues in Business Overview; redesign category cards to lead with business impact instead of severity scores.
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-016-business-first-view
+- **Contract Version**: (unchanged, 1.6.0)
+- **Stories**:
+  - [x] Filter Business Overview by confidence (HIGH + OBSERVED only) — Risk: LOW
+  - [x] Redesign BusinessImpactCategories cards (business impact first) — Risk: LOW
+  - Out of Scope: Backend changes, Technical Details tab (shows all issues), narrative enhancement
+- **Files Changed**:
+  - Frontend: src/pages/ReportPage.tsx, src/components/report/BusinessImpactCategories.tsx, src/components/report/__tests__/business-impact-categories.test.tsx, ARCHITECTURE.md
+- **Tests**: 0 added (161 total, 4 updated)
+- **Review**: APPROVED (INLINE — make check + make dod green, no auto-reject triggers)
+- **DoD**: PASSED
+- **Notes**: Risk: LOW. Confidence: HIGH. Pure UI filtering/display logic. Foundation Signals like `stale_content` (MEDIUM + INFERRED) now hidden in Business Overview, `copyright_outdated` (HIGH + OBSERVED) shown. Business language replaces technical jargon.
 
