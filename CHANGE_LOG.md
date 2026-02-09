@@ -325,7 +325,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Labels**: [SCHEMA_CHANGE]
 - **Request**: Implement Phase 1 Foundation Signals from the 150+ signal integration analysis. Add SiteAgeSignals, PartnerSignals, ComplexityFlags, SiteInventorySignals, and TechnicalDebtSignals to establish "owner who never forgot" baseline.
 - **Scope**: backend-only
-- **Mode**: STANDARD (schema change + new files + pipeline touched)
+- **Mode**: STANDARD
 - **Branch**: change/CHG-014-foundation-signals
 - **Contract Version**: v1.5.0 → v1.6.0 (additive: 15 new fields on GovernanceReport)
 - **Stories**:

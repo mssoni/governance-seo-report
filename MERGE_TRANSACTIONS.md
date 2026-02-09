@@ -145,3 +145,14 @@
 - **frontend_merge_commit:** b8a3b1a02ac8ca319820f360b3d8988b2e071deb
 - **manifest_commit:** (workspace root)
 - **notes:** SEO pipeline reuses governance results. 8 new tests (6 BE + 2 FE). Contract 1.4.0→1.5.0. STANDARD mode. Full process followed.
+
+### TX-2026-02-09-014 — CHG-014
+
+- **status:** STARTED
+- **change_id:** CHG-014
+- **backend_branch:** change/CHG-014-foundation-signals
+- **frontend_branch:** n/a
+- **backend_merge_commit:** (pending)
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (pending)
+- **notes:** Phase 1 Foundation Signals. 5 new detector/analyzer modules. 54 new tests. Contract 1.5.0→1.6.0. STANDARD mode.
