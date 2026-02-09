@@ -21,7 +21,8 @@
 | 1.9.0 | 2026-02-07 | CHG-010 | Fix golden fixture narrative drift + drift guard test |
 | 1.10.0 | 2026-02-07 | CHG-011 | Improve competitor suggestion relevance (two-step search) + Google review card. Contract 1.3.0 to 1.4.0 |
 | 1.11.0 | 2026-02-08 | CHG-012 | Click competitor suggestion card to fill URL input |
-| 1.12.0 | 2026-02-08 | CHG-013 | SEO pipeline reuses governance results via governance_job_id. Contract 1.5.0 |
+| 1.12.0 | 2026-02-08 | CHG-013 | SEO pipeline reuses governance results via governance_job_id. Contract 1.4.0 to 1.5.0 |
+| 1.13.0 | 2026-02-09 | CHG-014 | Phase 1 Foundation Signals. 5 new detector/analyzer modules + 15 new GovernanceReport fields. Contract 1.5.0 to 1.6.0. 54 new tests |
 
 ## Current Statistics
 
@@ -29,14 +30,14 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 315 |
+| Backend tests | 369 |
 | Frontend tests | 161 |
-| **Total tests** | **476** |
+| **Total tests** | **530** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 13 (CHG-001 through CHG-013) |
-| Contract version | 1.5.0 |
+| Post-V1 changes | 14 (CHG-001 through CHG-014) |
+| Contract version | 1.6.0 |
 
 ## Architecture Overview
 

@@ -318,6 +318,33 @@ This separation makes it possible to filter/automate on status without ambiguity
   5. No TDD fail-first evidence shown
   - **Remediation**: `validate_change.sh` script created to prevent recurrence
 
+### CHG-014: Phase 1 Foundation Signals
+
+- **Date**: 2026-02-09
+- **Status**: IN_PROGRESS
+- **Labels**: [SCHEMA_CHANGE]
+- **Request**: Implement Phase 1 Foundation Signals from the 150+ signal integration analysis. Add SiteAgeSignals, PartnerSignals, ComplexityFlags, SiteInventorySignals, and TechnicalDebtSignals to establish "owner who never forgot" baseline.
+- **Scope**: backend-only
+- **Mode**: STANDARD (schema change + new files + pipeline touched)
+- **Branch**: change/CHG-014-foundation-signals
+- **Contract Version**: v1.5.0 → v1.6.0 (additive: 15 new fields on GovernanceReport)
+- **Stories**:
+  - [x] SiteAgeSignals detector (copyright_year, blog_last_post_date, sitemap_latest_lastmod, update_cadence)
+  - [x] PartnerSignals detector (agency_name, agency_credit_url, link validation)
+  - [x] ComplexityFlags detector (login_link_present, app_routes_on_same_host, multi_locale)
+  - [x] SiteInventorySignals analyzer (page_count_estimate, templates_estimate, top_sections)
+  - [x] TechnicalDebtSignals scorer (technical_debt_score, missing_semantic_html, high_inline_style_ratio)
+  - [x] Schema evolution (15 new fields on GovernanceReport)
+  - [ ] Reasoning templates (stale_content, agency_link_dead, hidden_complexity, copyright_outdated, technical_debt_high)
+  - [ ] Pipeline integration (wire new detectors into governance pipeline)
+  - Out of Scope: Golden fixture updates, frontend changes, new metric cards, UI integration
+- **Files Changed**:
+  - Backend: app/detectors/site_age_detector.py (new), app/detectors/partner_detector.py (new), app/detectors/complexity_detector.py (new), app/reasoning/inventory_analyzer.py (new), app/reasoning/technical_debt_scorer.py (new), app/models/schemas.py, tests/test_site_age_detector.py (new, 13 tests), tests/test_partner_detector.py (new, 9 tests), tests/test_complexity_detector.py (new, 13 tests), tests/test_inventory_analyzer.py (new, 10 tests), tests/test_technical_debt_scorer.py (new, 9 tests), ARCHITECTURE.md, CONTRACTS.md, PROGRESS.md
+- **Tests**: +54 added (13 + 9 + 13 + 10 + 9) → 369 BE total
+- **Review**: (pending)
+- **DoD**: (pending)
+- **Notes**: Risk: MEDIUM (schema change + new modules). Confidence: HIGH. TDD followed strictly (all 54 tests written first, failed, then passed). Phase 1 of 4-phase Foundation Signals roadmap (6 weeks total).
+
 ### CHG-012: Click competitor suggestion to fill URL input
 
 - **Date**: 2026-02-08
