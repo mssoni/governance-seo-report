@@ -37,6 +37,34 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-018: Segment-Aware Personalized Business Overview
+
+- **Date**: 2026-02-09
+- **Status**: IN_PROGRESS
+- **Labels**: [SCHEMA_CHANGE]
+- **Request**: Build 3-segment personalized Business Overview (Revenue-Driven, Risk-Aware, Oversight) with aggressive LLM usage for website-specific, segment-aware report content.
+- **Scope**: both
+- **Mode**: STANDARD
+- **Branch**: change/CHG-018-segment-personalization
+- **Contract Version**: 1.6.0 → 1.7.0
+- **Stories**:
+  - [x] Story 1: Segment Classifier Module — Risk: LOW
+  - [x] Story 2: Schema + Foundation Signal Wiring — Risk: LOW
+  - [x] Story 3: LLM Personalized Report Generation — Risk: MEDIUM
+  - [x] Story 4: Frontend Segment-Aware Rendering — Risk: LOW
+  - [x] Story 5: Contract Sync + Documentation — Risk: LOW
+  - Out of Scope: Adding new BusinessType enum values, multiple Gemini calls, modifying issue templates, SEO tab changes, ENGINEERING_PLAN.md
+- **Files Changed**:
+  - Backend: `app/reasoning/segment_classifier.py` (new), `app/models/schemas.py`, `app/reasoning/gemini_summarizer.py`, `app/services/pipeline.py`, `tests/test_segment_classifier.py` (new), `tests/test_personalized_report.py` (new), `tests/test_pipeline.py`, `tests/fixtures/reports/governance-report.json`
+  - Frontend: `src/types/api.ts`, `src/components/report/BusinessImpactCategories.tsx`, `src/pages/ReportPage.tsx`, `src/components/report/__tests__/business-impact-categories.test.tsx`, `src/mocks/golden/governance-report.json`
+  - Docs: `CHANGE_MANIFEST.json`, `CHANGE_LOG.md`, backend/frontend `CONTRACTS.md`, `ARCHITECTURE.md`, `PROGRESS.md`
+- **Tests**: +54 added (31 segment classifier + 18 personalized report + 5 frontend), 1 modified (test_pipeline.py)
+- **Review**: (pending)
+- **DoD**: (pending)
+- **Notes**: Three segments: dental/clinic/healthcare → Revenue-Driven; construction/logistics/manufacturing/professional_services → Risk-Aware; ngo/education → Oversight. LLM generates structured JSON (narrative + 4 category insights + 3 improvements) in ONE call. Deterministic fallback is segment-aware.
+
+---
+
 ### CHG-017: Playwright CDP fallback for PSI API failures
 
 - **Date**: 2026-02-09

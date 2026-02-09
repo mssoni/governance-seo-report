@@ -1,12 +1,12 @@
 {
-  "contract_version": "1.6.0",
-  "last_change_id": "CHG-017",
-  "backend_commit": "0e3ee1faa9bc07e41b76b0a8ea3b3b5aae72e102",
-  "frontend_commit": "8116de54ff6afabb1956d16e8e17cb6dcf239c74",
+  "contract_version": "1.7.0",
+  "last_change_id": "CHG-018",
+  "backend_commit": "pending-merge",
+  "frontend_commit": "pending-merge",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-09",
-  "notes": "CHG-017: Playwright CDP fallback for PSI API failures. New cdp_perf_client.py + psi_client.py fallback. 21 new tests. Backend-only, no contract change."
+  "notes": "CHG-018: Segment-aware personalized Business Overview. New segment_classifier.py, PersonalizedContent in gemini_summarizer, CategoryInsight model. 54 new tests (49 backend + 5 frontend). Contract 1.6.0→1.7.0."
 }
