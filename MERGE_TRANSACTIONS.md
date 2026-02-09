@@ -201,6 +201,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Segment-aware personalized Business Overview. 54 new tests (49 BE + 5 FE). Contract 1.6.0→1.7.0. STANDARD mode. Review: APPROVED. Atomic --no-ff merge successful in both repos.
 
+### TX-2026-02-10-020 — CHG-020
+
+- **status:** COMPLETED
+- **change_id:** CHG-020
+- **backend_branch:** change/CHG-020-honest-5x5-lists
+- **frontend_branch:** change/CHG-020-honest-5x5-lists
+- **backend_merge_commit:** 3f6545b
+- **frontend_merge_commit:** 8e98ebe
+- **manifest_commit:** (workspace root)
+- **notes:** Both repos. Honest 5+5 bulleted lists in Business Overview. PersonalizedContent gains whats_working + needs_attention. Gemini prompt gets page context + honest tone. Frontend pills replaced with bulleted lists. 12 new backend tests, 8 rewritten frontend tests.
+
 ### TX-2026-02-09-019 — CHG-019
 
 - **status:** COMPLETED

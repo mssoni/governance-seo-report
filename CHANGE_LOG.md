@@ -37,6 +37,30 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-020: Honest 5+5 Bulleted Lists in Business Overview
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Add personalized 5 strengths + 5 fixes as bulleted lists (not pills), honest tone, page-level references, not salesy
+- **Scope**: both
+- **Mode**: STANDARD
+- **Branch**: change/CHG-020-honest-5x5-lists
+- **Contract Version**: 1.7.0 (no change)
+- **Stories**:
+  - [x] Story 1: Gemini generates personalized 5+5 lists (backend)
+  - [x] Story 2: Frontend renders bulleted lists instead of pills
+  - [x] Story 3: Fixtures + documentation
+- **Files Changed**:
+  - Backend: `app/reasoning/gemini_summarizer.py`, `app/services/pipeline.py`, `tests/test_personalized_report.py`, `tests/fixtures/reports/governance-report.json`
+  - Frontend: `src/components/report/ExecutiveStory.tsx`, `src/components/report/__tests__/executive-story.test.tsx`, `src/components/report/__tests__/executive-summary.test.tsx`, `src/mocks/golden/governance-report.json`
+- **Tests**: 12 new backend tests, 8 rewritten frontend tests (458 backend / 170 frontend)
+- **Review**: PASS — no auto-reject triggers
+- **DoD**: PASS — all gates (backend 7/7, frontend 6/6)
+- **Notes**: No schema change — SummaryItem already has title+description, frontend just didn't render description. PersonalizedContent dataclass gains whats_working + needs_attention fields. Gemini prompt expanded with page context, foundation signals, honest tone rules. Deterministic fallback produces 5 items each with padding.
+
+---
+
 ### CHG-019: Fix zip() length mismatch in page/soup collection
 
 - **Date**: 2026-02-09
