@@ -1,12 +1,12 @@
 {
   "contract_version": "1.7.0",
-  "last_change_id": "CHG-018",
-  "backend_commit": "4b55cf7642358df606d2b1bfc13eb00006586d66",
+  "last_change_id": "CHG-019",
+  "backend_commit": "322e83da517673a6baa43dbb798e985300a78152",
   "frontend_commit": "410788996fd5eec8bb63cce6227cae5cc675a5dc",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-09",
-  "notes": "CHG-018: Segment-aware personalized Business Overview. New segment_classifier.py, PersonalizedContent in gemini_summarizer, CategoryInsight model. 54 new tests (49 backend + 5 frontend). Contract 1.6.0→1.7.0."
+  "notes": "CHG-019: Fix zip() length mismatch in page/soup collection. Backend-only bug fix. 1 new test. Contract 1.7.0 (no change)."
 }

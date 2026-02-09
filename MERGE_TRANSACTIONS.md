@@ -201,3 +201,13 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Segment-aware personalized Business Overview. 54 new tests (49 BE + 5 FE). Contract 1.6.0→1.7.0. STANDARD mode. Review: APPROVED. Atomic --no-ff merge successful in both repos.
 
+### TX-2026-02-09-019 — CHG-019
+
+- **status:** COMPLETED
+- **change_id:** CHG-019
+- **backend_branch:** change/CHG-019-fix-zip-mismatch
+- **frontend_branch:** n/a
+- **backend_merge_commit:** 322e83da517673a6baa43dbb798e985300a78152
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Fix zip() length mismatch in page/soup collection. 1 new test. INLINE mode. Full process followed.

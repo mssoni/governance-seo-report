@@ -37,6 +37,27 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-019: Fix zip() length mismatch in page/soup collection
+
+- **Date**: 2026-02-09
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Fix "zip() argument 2 is shorter than argument 1" runtime error when some sampled pages fail to re-fetch
+- **Scope**: backend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-019-fix-zip-mismatch
+- **Contract Version**: 1.7.0 (no change)
+- **Stories**:
+  - [x] Story 1: Fix page/soup sync in pipeline — Risk: LOW
+- **Files Changed**:
+  - Backend: `app/services/pipeline.py`, `tests/test_pipeline.py`
+- **Tests**: +1 added
+- **Review**: INLINE (code review in-line)
+- **DoD**: PASSED (`make dod` green, `make check` green)
+- **Notes**: Pre-existing bug where failed page re-fetches caused pages[] and soups[] to have different lengths, crashing run_detectors(). Fix builds both lists in lockstep.
+
+---
+
 ### CHG-018: Segment-Aware Personalized Business Overview
 
 - **Date**: 2026-02-09
