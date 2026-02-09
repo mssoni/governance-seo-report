@@ -1,12 +1,12 @@
 {
   "contract_version": "1.6.0",
   "last_change_id": "CHG-015",
-  "backend_commit": "7ea260bd0e962683ef9fdfae435434198589cf4a",
-  "frontend_commit": "b8a3b1a02ac8ca319820f360b3d8988b2e071deb",
+  "backend_commit": "9b76ff2ec59feb556b91479c8fede805e0e911c0",
+  "frontend_commit": "7c9870d9157e6063376284374324f3f61785c085",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-09",
-  "notes": "CHG-014: Phase 1 Foundation Signals - added 5 new detector/analyzer modules (site_age, partner, complexity, inventory, technical_debt) + 15 new GovernanceReport fields. Contract 1.5.0\u21921.6.0 (additive). 54 new tests. MERGED to backend main."
+  "notes": "CHG-015: Phase 1 Pipeline Integration (completes CHG-014) - added 5 reasoning templates + issue builder integration + pipeline wiring. Contract 1.6.0 (no change). 9 new tests (378 backend total)."
 }

@@ -23,6 +23,7 @@
 | 1.11.0 | 2026-02-08 | CHG-012 | Click competitor suggestion card to fill URL input |
 | 1.12.0 | 2026-02-08 | CHG-013 | SEO pipeline reuses governance results via governance_job_id. Contract 1.4.0 to 1.5.0 |
 | 1.13.0 | 2026-02-09 | CHG-014 | Phase 1 Foundation Signals. 5 new detector/analyzer modules + 15 new GovernanceReport fields. Contract 1.5.0 to 1.6.0. 54 new tests |
+| 1.14.0 | 2026-02-09 | CHG-015 | Phase 1 Pipeline Integration (completes CHG-014). 5 reasoning templates + issue builder integration + pipeline wiring. 9 new tests |
 
 ## Current Statistics
 
@@ -30,13 +31,13 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 369 |
+| Backend tests | 378 |
 | Frontend tests | 161 |
-| **Total tests** | **530** |
+| **Total tests** | **539** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 14 (CHG-001 through CHG-014) |
+| Post-V1 changes | 15 (CHG-001 through CHG-015) |
 | Contract version | 1.6.0 |
 
 ## Architecture Overview
