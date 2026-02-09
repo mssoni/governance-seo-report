@@ -190,3 +190,14 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Playwright CDP fallback for PSI API failures. 21 new tests (15 CDP + 6 fallback). Contract 1.6.0 (no change). STANDARD mode. Atomic --no-ff merge successful.
 
+### TX-2026-02-09-018 — CHG-018
+
+- **status:** COMPLETED
+- **change_id:** CHG-018
+- **backend_branch:** change/CHG-018-segment-personalization
+- **frontend_branch:** change/CHG-018-segment-personalization
+- **backend_merge_commit:** 4b55cf7642358df606d2b1bfc13eb00006586d66
+- **frontend_merge_commit:** 410788996fd5eec8bb63cce6227cae5cc675a5dc
+- **manifest_commit:** (workspace root)
+- **notes:** Segment-aware personalized Business Overview. 54 new tests (49 BE + 5 FE). Contract 1.6.0→1.7.0. STANDARD mode. Review: APPROVED. Atomic --no-ff merge successful in both repos.
+

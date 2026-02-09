@@ -1,8 +1,8 @@
 {
   "contract_version": "1.7.0",
   "last_change_id": "CHG-018",
-  "backend_commit": "pending-merge",
-  "frontend_commit": "pending-merge",
+  "backend_commit": "4b55cf7642358df606d2b1bfc13eb00006586d66",
+  "frontend_commit": "410788996fd5eec8bb63cce6227cae5cc675a5dc",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"

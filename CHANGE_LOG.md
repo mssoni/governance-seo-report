@@ -40,7 +40,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 ### CHG-018: Segment-Aware Personalized Business Overview
 
 - **Date**: 2026-02-09
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETE
 - **Labels**: [SCHEMA_CHANGE]
 - **Request**: Build 3-segment personalized Business Overview (Revenue-Driven, Risk-Aware, Oversight) with aggressive LLM usage for website-specific, segment-aware report content.
 - **Scope**: both
@@ -59,8 +59,8 @@ This separation makes it possible to filter/automate on status without ambiguity
   - Frontend: `src/types/api.ts`, `src/components/report/BusinessImpactCategories.tsx`, `src/pages/ReportPage.tsx`, `src/components/report/__tests__/business-impact-categories.test.tsx`, `src/mocks/golden/governance-report.json`
   - Docs: `CHANGE_MANIFEST.json`, `CHANGE_LOG.md`, backend/frontend `CONTRACTS.md`, `ARCHITECTURE.md`, `PROGRESS.md`
 - **Tests**: +54 added (31 segment classifier + 18 personalized report + 5 frontend), 1 modified (test_pipeline.py)
-- **Review**: (pending)
-- **DoD**: (pending)
+- **Review**: APPROVED — 0 auto-reject triggers, 3 non-blocking observations
+- **DoD**: PASSED (`make dod` green in both repos)
 - **Notes**: Three segments: dental/clinic/healthcare → Revenue-Driven; construction/logistics/manufacturing/professional_services → Risk-Aware; ngo/education → Oversight. LLM generates structured JSON (narrative + 4 category insights + 3 improvements) in ONE call. Deterministic fallback is segment-aware.
 
 ---
