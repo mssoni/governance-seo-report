@@ -365,3 +365,54 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Review**: APPROVED (INLINE — orchestrator review, all 11 triggers pass, make check + make dod green)
 - **DoD**: PASSED
 - **Notes**: Risk: LOW. Confidence: HIGH. Pure UI interaction — no API/schema/IO changes. TDD confirmed (5 tests failed before implementation).
+
+### CHG-015: Phase 1 Foundation Signals - Pipeline Integration (Completes CHG-014)
+
+**Status**: COMPLETE
+**Date Started**: 2026-02-09
+**Date Completed**: 2026-02-09
+**Scope**: backend + frontend
+**Branch**: change/CHG-015-phase1-pipeline-integration
+**Mode**: STANDARD
+
+**Description**:
+Completes CHG-014 deferred stories 7-8: create 5 reasoning templates for Foundation Signals (stale_content, agency_link_dead, hidden_complexity, copyright_outdated, technical_debt_high) + wire new detectors into governance pipeline + update issue_builder + update golden fixtures.
+
+**User Story**:
+As a governance-focused user, I want to see issues surfaced when my site has stale content, dead agency links, hidden complexity, outdated copyright, or high technical debt, so I understand maintenance risks.
+
+**Stories**:
+1. ✓ Create 5 reasoning templates for Foundation Signals (stale_content, agency_link_dead, hidden_complexity, copyright_outdated, technical_debt_high) — Risk: LOW
+2. ✓ Wire new detectors into pipeline step 5 + update issue_builder to inspect new signals + update golden fixtures — Risk: MEDIUM
+
+**Dependencies**: CHG-014 (detectors + schema already merged)
+
+**Out of Scope**:
+- Frontend UI changes (metric cards, tabs) — deferred to future work
+- SEO pipeline changes — Foundation Signals are governance-only
+- Modifying existing templates — all templates remain unchanged
+
+**Risks**:
+- Pipeline integration errors if detector interfaces change ← Mitigated by integration tests
+- Golden fixtures may drift if not updated consistently ← Fixed via automated update script
+
+**Files Changed**:
+- backend/app/reasoning/templates.py — added 5 new templates (#28-32) to registry
+- backend/app/reasoning/issue_builder.py — added Foundation Signals inspection in _collect_raw_issues()
+- backend/app/detectors/engine.py — expanded DetectorResults + run_detectors() to call 4 new detectors
+- backend/app/services/pipeline.py — pass sitemap_urls to run_detectors(), call score_technical_debt() after PSI
+- backend/tests/fixtures/reports/governance_report.json — added 15 new CHG-014 fields with sample data
+- frontend/src/mocks/golden/governance-report.json — added 15 new CHG-014 fields with sample data
+- backend/tests/test_templates.py — added 5 new signal IDs to REQUIRED_SIGNAL_IDS
+- backend/tests/test_foundation_signals_integration.py — NEW FILE: 9 integration tests
+
+**Tests**:
+- Backend: +9 tests (9 Foundation Signals integration tests)
+- Frontend: 0 (no UI changes)
+- Total: +9 (378 backend tests total)
+
+**Review**: APPROVED
+**DoD**: PASSED
+**Merge Commit**: (backend: pending, frontend: pending)
+**Completion Date**: 2026-02-09
+

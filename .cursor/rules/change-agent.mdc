@@ -51,7 +51,7 @@ proc-branch       | Create feature branch(es) in EACH affected submodule + paren
 proc-tdd-tests    | Write tests FIRST — run them, show they FAIL (paste terminal output)
 proc-tdd-impl     | Implement — run tests, show they PASS (paste terminal output)
 proc-make-check   | Run make check in ALL affected repos — paste result
-proc-docs         | Update ARCHITECTURE.md, CONTRACTS.md, PROGRESS.md, ENGINEERING_PLAN.md (if architecture/stats changed)
+proc-docs         | Update ARCHITECTURE.md, CONTRACTS.md, PROGRESS.md; ENGINEERING_PLAN.md every 5 changes or on significant arch/stats change
 proc-dod          | Run make dod in ALL affected repos — paste result
 proc-review       | STANDARD: spawn Review Agent. INLINE: run review inline (git diff main, 11 triggers)
 proc-validate     | Run ./scripts/validate_change.sh CHG-NNN — MUST PASS before merge
@@ -212,4 +212,4 @@ These are mistakes that have actually happened. Read them carefully.
 6. **Silent decomposition** — The user must SEE the DECOMPOSE block. Don't do it silently.
 7. **Merging with fast-forward** — ALWAYS use `--no-ff`. This creates a merge commit for audit trail.
 8. **Not updating ARCHITECTURE.md** — Every change that touches code must update the relevant ARCHITECTURE.md
-9. **Forgetting ENGINEERING_PLAN.md** — Update the Version History table and Current Statistics section when test counts, endpoints, or architecture change. Run `./scripts/plan_stats.sh` to verify stats.
+9. **Forgetting ENGINEERING_PLAN.md** — Update the Version History table and Current Statistics every 5 changes or when test counts, endpoints, or architecture significantly change. Run `./scripts/plan_stats.sh` to verify.

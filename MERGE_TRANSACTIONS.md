@@ -156,3 +156,15 @@
 - **frontend_merge_commit:** n/a
 - **manifest_commit:** (workspace root)
 - **notes:** Phase 1 Foundation Signals. 5 new detector/analyzer modules (site_age, partner, complexity, inventory, technical_debt). 15 new GovernanceReport fields. 54 new tests. Contract 1.5.0→1.6.0. STANDARD mode. Stories 1-6 complete (detectors + schema). Stories 7-8 deferred (reasoning templates + pipeline integration).
+
+### TX-2026-02-09-015 — CHG-015
+
+- **status:** STARTED
+- **change_id:** CHG-015
+- **backend_branch:** change/CHG-015-phase1-pipeline-integration
+- **frontend_branch:** change/CHG-015-phase1-pipeline-integration
+- **backend_merge_commit:** (pending)
+- **frontend_merge_commit:** (pending)
+- **manifest_commit:** (pending)
+- **notes:** Phase 1 Foundation Signals pipeline integration. 5 reasoning templates + issue builder integration + 4 detectors wired into pipeline + golden fixtures updated. STANDARD mode.
+

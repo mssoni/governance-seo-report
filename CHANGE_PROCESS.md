@@ -132,6 +132,8 @@ User Prompt
 │ - CURRENT_TASKS.md — claim/release cycle            │
 │ - CONTRACTS.md — if schema changed + version bump   │
 │ - CHANGE_MANIFEST.json — update commit SHAs         │
+│ - ENGINEERING_PLAN.md — every 5 changes or on       │
+│   significant architecture/stats change             │
 └─────────────────────────────────────────────────────┘
     │
     ▼
