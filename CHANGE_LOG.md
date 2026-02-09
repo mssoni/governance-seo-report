@@ -321,7 +321,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 ### CHG-014: Phase 1 Foundation Signals
 
 - **Date**: 2026-02-09
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETE
 - **Labels**: [SCHEMA_CHANGE]
 - **Request**: Implement Phase 1 Foundation Signals from the 150+ signal integration analysis. Add SiteAgeSignals, PartnerSignals, ComplexityFlags, SiteInventorySignals, and TechnicalDebtSignals to establish "owner who never forgot" baseline.
 - **Scope**: backend-only
@@ -341,8 +341,8 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Files Changed**:
   - Backend: app/detectors/site_age_detector.py (new), app/detectors/partner_detector.py (new), app/detectors/complexity_detector.py (new), app/reasoning/inventory_analyzer.py (new), app/reasoning/technical_debt_scorer.py (new), app/models/schemas.py, tests/test_site_age_detector.py (new, 13 tests), tests/test_partner_detector.py (new, 9 tests), tests/test_complexity_detector.py (new, 13 tests), tests/test_inventory_analyzer.py (new, 10 tests), tests/test_technical_debt_scorer.py (new, 9 tests), ARCHITECTURE.md, CONTRACTS.md, PROGRESS.md
 - **Tests**: +54 added (13 + 9 + 13 + 10 + 9) → 369 BE total
-- **Review**: (pending)
-- **DoD**: (pending)
+- **Review**: APPROVED (inline review - all 11 auto-reject triggers passed, scope discipline verified)
+- **DoD**: PASSED (make dod green, all checklist items verified)
 - **Notes**: Risk: MEDIUM (schema change + new modules). Confidence: HIGH. TDD followed strictly (all 54 tests written first, failed, then passed). Phase 1 of 4-phase Foundation Signals roadmap (6 weeks total).
 
 ### CHG-012: Click competitor suggestion to fill URL input

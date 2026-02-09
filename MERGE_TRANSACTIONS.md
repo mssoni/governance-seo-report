@@ -148,11 +148,11 @@
 
 ### TX-2026-02-09-014 — CHG-014
 
-- **status:** STARTED
+- **status:** COMPLETED
 - **change_id:** CHG-014
 - **backend_branch:** change/CHG-014-foundation-signals
 - **frontend_branch:** n/a
-- **backend_merge_commit:** (pending)
+- **backend_merge_commit:** 7ea260bd0e962683ef9fdfae435434198589cf4a
 - **frontend_merge_commit:** n/a
-- **manifest_commit:** (pending)
-- **notes:** Phase 1 Foundation Signals. 5 new detector/analyzer modules. 54 new tests. Contract 1.5.0→1.6.0. STANDARD mode.
+- **manifest_commit:** (workspace root)
+- **notes:** Phase 1 Foundation Signals. 5 new detector/analyzer modules (site_age, partner, complexity, inventory, technical_debt). 15 new GovernanceReport fields. 54 new tests. Contract 1.5.0→1.6.0. STANDARD mode. Stories 1-6 complete (detectors + schema). Stories 7-8 deferred (reasoning templates + pipeline integration).

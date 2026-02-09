@@ -1,12 +1,12 @@
 {
   "contract_version": "1.6.0",
   "last_change_id": "CHG-014",
-  "backend_commit": "04da9065e9726b0a7b0ada3edb9ff3b957f0991a",
+  "backend_commit": "7ea260bd0e962683ef9fdfae435434198589cf4a",
   "frontend_commit": "b8a3b1a02ac8ca319820f360b3d8988b2e071deb",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-09",
-  "notes": "CHG-014: Phase 1 Foundation Signals - added 5 new detector/analyzer modules (site_age, partner, complexity, inventory, technical_debt) + 15 new GovernanceReport fields. Contract 1.5.0→1.6.0 (additive). 54 new tests. IN_PROGRESS - documentation complete, pending: reasoning templates, pipeline integration, DoD, review."
+  "notes": "CHG-014: Phase 1 Foundation Signals - added 5 new detector/analyzer modules (site_age, partner, complexity, inventory, technical_debt) + 15 new GovernanceReport fields. Contract 1.5.0→1.6.0 (additive). 54 new tests. MERGED to backend main."
 }
