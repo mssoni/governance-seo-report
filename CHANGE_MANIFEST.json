@@ -1,12 +1,12 @@
 {
   "contract_version": "1.8.0",
-  "last_change_id": "CHG-027",
-  "backend_commit": "e1a78b5",
+  "last_change_id": "CHG-028",
+  "backend_commit": "9d7c3e4",
   "frontend_commit": "99df5ef",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-027: Extract report-building from pipeline.py. No schema change."
+  "notes": "CHG-028: Extract pipeline steps into PipelineStep classes. No schema change."
 }

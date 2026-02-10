@@ -37,6 +37,29 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-028: Extract pipeline steps into PipelineStep protocol
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-028: extract 9 pipeline steps from execute_governance_steps into self-contained PipelineStep classes with PipelineContext
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-028-pipeline-steps
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Create PipelineContext mutable dataclass for intermediate state (backend)
+  - [x] Story 2: Create 9 PipelineStep classes with run(ctx) method (backend)
+  - [x] Story 3: Rewrite execute_governance_steps to iterate GOVERNANCE_STEPS list (backend)
+  - [x] Story 4: Update test mock patch targets to pipeline_steps module (backend)
+- **Files Changed**:
+  - Backend: app/services/pipeline_context.py (NEW), app/services/pipeline_steps.py (NEW), app/services/pipeline.py, tests/test_pipeline_steps.py (NEW), tests/test_pipeline.py, tests/test_seo_pipeline.py, tests/test_error_handling.py, tests/test_business_view.py, ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +10 added, 4 modified (patch target updates)
+- **Review**: APPROVED (standard — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 9/9 checks)
+
+---
+
 ### CHG-027: Extract report-building functions from pipeline.py
 
 - **Date**: 2026-02-10
