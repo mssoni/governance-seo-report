@@ -37,6 +37,7 @@
 | 1.25.0 | 2026-02-10 | CHG-026 | Detector protocol + registry. 8 detectors self-register via @register_detector. engine.py iterates DETECTOR_REGISTRY. 8 new tests |
 | 1.26.0 | 2026-02-10 | CHG-027 | Extract report-building from pipeline.py → reasoning/report_builder.py + services/error_classifier.py. pipeline.py 1256→686 lines. 18 new tests |
 | 1.27.0 | 2026-02-10 | CHG-028 | Extract 9 pipeline steps into PipelineStep classes. pipeline.py 686→247 lines. New pipeline_context.py + pipeline_steps.py. 10 new tests |
+| 1.28.0 | 2026-02-10 | CHG-029 | Crawler callable protocols for DIP. Steps accept injected deps. GOVERNANCE_STEPS → build_governance_steps() factory. H-SOLID-4 enforcement. 18 new tests |
 
 ## Current Statistics
 
@@ -44,13 +45,13 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 525 |
+| Backend tests | 543 |
 | Frontend tests | 173 |
-| **Total tests** | **698** |
+| **Total tests** | **716** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 28 (CHG-001 through CHG-028) |
+| Post-V1 changes | 29 (CHG-001 through CHG-029) |
 | Contract version | 1.8.0 |
 
 ## Architecture Overview

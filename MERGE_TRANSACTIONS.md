@@ -256,6 +256,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend). STANDARD mode. Full process followed.
 
+### TX-2026-02-10-029 — CHG-029
+
+- **status:** COMPLETED
+- **change_id:** CHG-029
+- **backend_branch:** change/CHG-029-crawler-protocols
+- **frontend_branch:** n/a
+- **backend_merge_commit:** cb828ec
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Crawler callable protocols + DIP injection into pipeline steps. 18 new tests. STANDARD mode.
+
 ### TX-2026-02-10-028 — CHG-028
 
 - **status:** COMPLETED

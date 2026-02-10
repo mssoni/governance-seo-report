@@ -37,6 +37,26 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-029: Crawler protocols for DIP in pipeline steps
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-029: create crawler callable protocols (UrlNormalizer, HtmlFetcher, SitemapParser, PageSampler) and inject them into pipeline step constructors for Dependency Inversion
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-029-crawler-protocols
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Create crawlers/protocols.py with 4 callable protocol types (backend)
+  - [x] Story 2: Update step classes to accept injected deps; replace GOVERNANCE_STEPS with build_governance_steps() factory (backend)
+  - [x] Story 3: Add H-SOLID-4 DIP enforcement tests to test_layering.py (backend)
+- **Files Changed**:
+  - Backend: app/crawlers/protocols.py (NEW), app/services/pipeline_steps.py, app/services/pipeline.py, tests/test_crawler_protocols.py (NEW), tests/test_pipeline_steps.py, tests/test_layering.py, ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +18 added, 7 modified (GOVERNANCE_STEPS → build_governance_steps)
+- **Review**: APPROVED (standard — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 9/9 checks)
+
 ### CHG-028: Extract pipeline steps into PipelineStep protocol
 
 - **Date**: 2026-02-10

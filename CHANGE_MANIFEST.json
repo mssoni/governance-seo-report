@@ -1,12 +1,12 @@
 {
   "contract_version": "1.8.0",
-  "last_change_id": "CHG-028",
-  "backend_commit": "9d7c3e4",
+  "last_change_id": "CHG-029",
+  "backend_commit": "cb828ec",
   "frontend_commit": "99df5ef",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-028: Extract pipeline steps into PipelineStep classes. No schema change."
+  "notes": "CHG-029: Crawler protocols for DIP in pipeline steps. No schema change."
 }
