@@ -50,8 +50,13 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Stories**:
   - [ ] Story 1: Add SOLID hard gates to check_dod.sh (both repos) + test_layering.py with permissive thresholds
   - [ ] Story 2: Add SOLID review items to DEFINITION_OF_DONE.md + update Review Agent template
-- **Files Changed**: (in progress)
-- **Tests**: (in progress)
+- **Files Changed**:
+  - Workspace: `DEFINITION_OF_DONE.md`, `CHANGE_PROCESS.md`, `CLAUDE.md`
+  - Backend: `scripts/check_dod.sh`, `tests/test_layering.py`
+  - Frontend: `scripts/check_dod.sh`
+- **Tests**: +3 added (TestClassCountEnforcement, TestModuleLineCounts, TestNoLiveCallsInTests updated) in backend test_layering.py
+- **Review**: APPROVED (INLINE)
+- **DoD**: PASSED (`make dod` green in both repos)
 - **Out of Scope**: Refactoring any existing production code; strict threshold enforcement (that's CHG-035)
 
 ---

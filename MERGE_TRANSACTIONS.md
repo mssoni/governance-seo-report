@@ -255,3 +255,14 @@
 - **frontend_merge_commit:** 891a8bd
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend). STANDARD mode. Full process followed.
+
+### TX-2026-02-10-024 — CHG-024
+
+- **status:** STARTED
+- **change_id:** CHG-024
+- **backend_branch:** change/CHG-024-solid-compliance-checks
+- **frontend_branch:** change/CHG-024-solid-compliance-checks
+- **backend_merge_commit:** (pending)
+- **frontend_merge_commit:** (pending)
+- **manifest_commit:** (pending)
+- **notes:** Both repos + workspace. Add SOLID compliance checks to DoD enforcement scripts, test_layering.py, DEFINITION_OF_DONE.md, and Review Agent template. INLINE mode.

@@ -45,7 +45,7 @@
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 23 (CHG-001 through CHG-023) |
+| Post-V1 changes | 24 (CHG-001 through CHG-024) |
 | Contract version | 1.8.0 |
 
 ## Architecture Overview
