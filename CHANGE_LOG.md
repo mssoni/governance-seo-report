@@ -37,6 +37,29 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-026: Detector protocol and registry in engine.py
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-026: eliminate OCP violation in engine.py
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-026-detector-registry
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: DetectorContext + RegisteredDetector + DETECTOR_REGISTRY + @register_detector in protocols.py (backend)
+  - [x] Story 2: Self-registration adapters in all 8 detector modules (backend)
+  - [x] Story 3: Rewrite engine.py to iterate registry (backend)
+  - [x] Story 4: Move merge functions to detector modules (backend)
+- **Files Changed**:
+  - Backend: app/detectors/protocols.py (NEW), app/detectors/__init__.py, app/detectors/engine.py, app/detectors/stack_detector.py, app/detectors/integration_detector.py, app/detectors/a11y_detector.py, app/detectors/security_detector.py, app/detectors/site_age_detector.py, app/detectors/partner_detector.py, app/detectors/complexity_detector.py, app/reasoning/inventory_analyzer.py, tests/test_detector_registry.py (NEW), ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +8 added, 0 modified
+- **Review**: APPROVED (inline — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 9/9 checks)
+
+---
+
 ### CHG-025: Split schemas.py into domain-grouped modules
 
 - **Date**: 2026-02-10

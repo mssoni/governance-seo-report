@@ -1,12 +1,12 @@
 {
   "contract_version": "1.8.0",
-  "last_change_id": "CHG-025",
-  "backend_commit": "901a8ff",
+  "last_change_id": "CHG-026",
+  "backend_commit": "98b9491",
   "frontend_commit": "99df5ef",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-025: Split schemas.py into 6 domain modules. No schema change."
+  "notes": "CHG-026: Detector protocol + registry. No schema change."
 }

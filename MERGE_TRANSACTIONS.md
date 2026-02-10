@@ -256,6 +256,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend). STANDARD mode. Full process followed.
 
+### TX-2026-02-10-026 — CHG-026
+
+- **status:** COMPLETED
+- **change_id:** CHG-026
+- **backend_branch:** change/CHG-026-detector-registry
+- **frontend_branch:** n/a
+- **backend_merge_commit:** 98b9491
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Detector protocol + registry pattern. 8 detectors self-register. engine.py iterates registry. 8 new tests. STANDARD mode.
+
 ### TX-2026-02-10-025 — CHG-025
 
 - **status:** COMPLETED
