@@ -38,6 +38,7 @@
 | 1.26.0 | 2026-02-10 | CHG-027 | Extract report-building from pipeline.py → reasoning/report_builder.py + services/error_classifier.py. pipeline.py 1256→686 lines. 18 new tests |
 | 1.27.0 | 2026-02-10 | CHG-028 | Extract 9 pipeline steps into PipelineStep classes. pipeline.py 686→247 lines. New pipeline_context.py + pipeline_steps.py. 10 new tests |
 | 1.28.0 | 2026-02-10 | CHG-029 | Crawler callable protocols for DIP. Steps accept injected deps. GOVERNANCE_STEPS → build_governance_steps() factory. H-SOLID-4 enforcement. 18 new tests |
+| 1.29.0 | 2026-02-10 | CHG-030 | Split gemini_summarizer.py 875→308 lines. 3 new modules + SummarizerProtocol. 12 new tests |
 
 ## Current Statistics
 
@@ -45,13 +46,13 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 543 |
+| Backend tests | 555 |
 | Frontend tests | 173 |
-| **Total tests** | **716** |
+| **Total tests** | **728** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 29 (CHG-001 through CHG-029) |
+| Post-V1 changes | 30 (CHG-001 through CHG-030) |
 | Contract version | 1.8.0 |
 
 ## Architecture Overview

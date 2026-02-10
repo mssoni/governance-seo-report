@@ -37,6 +37,26 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-030: Split gemini_summarizer.py with SummarizerProtocol
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-030: split 875-line gemini_summarizer.py into 4 focused modules with SummarizerProtocol for DIP
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-030-summarizer-split
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Create summarizer_protocol.py with PersonalizedContent + SummarizerProtocol (backend)
+  - [x] Story 2: Extract deterministic_summarizer.py + personalization_prompt.py (backend)
+  - [x] Story 3: Slim gemini_summarizer.py to Gemini API only + barrel re-exports (backend)
+- **Files Changed**:
+  - Backend: app/reasoning/summarizer_protocol.py (NEW), app/reasoning/deterministic_summarizer.py (NEW), app/reasoning/personalization_prompt.py (NEW), app/reasoning/gemini_summarizer.py, tests/test_summarizer_split.py (NEW), ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +12 added, 0 modified (barrel re-exports preserve all existing imports)
+- **Review**: APPROVED (standard — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 9/9 checks)
+
 ### CHG-029: Crawler protocols for DIP in pipeline steps
 
 - **Date**: 2026-02-10
