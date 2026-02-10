@@ -37,6 +37,25 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-024: Add SOLID compliance checks to DoD and review process
+
+- **Date**: 2026-02-10
+- **Status**: IN_PROGRESS
+- **Labels**: (none)
+- **Request**: Embed SOLID principle checks into the Review Agent, DoD enforcement scripts, and test_layering.py so regressions are caught automatically.
+- **Scope**: both + workspace
+- **Mode**: INLINE
+- **Branch**: change/CHG-024-solid-compliance-checks
+- **Contract Version**: (unchanged, 1.8.0)
+- **Stories**:
+  - [ ] Story 1: Add SOLID hard gates to check_dod.sh (both repos) + test_layering.py with permissive thresholds
+  - [ ] Story 2: Add SOLID review items to DEFINITION_OF_DONE.md + update Review Agent template
+- **Files Changed**: (in progress)
+- **Tests**: (in progress)
+- **Out of Scope**: Refactoring any existing production code; strict threshold enforcement (that's CHG-035)
+
+---
+
 ### CHG-023: Pipeline Performance Optimization
 
 - **Date**: 2026-02-10

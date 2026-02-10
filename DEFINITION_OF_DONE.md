@@ -50,6 +50,19 @@
 - [ ] `CURRENT_TASKS.md` lock released **[R]**
 - [ ] `CHANGE_LOG.md` entry exists with correct Change ID **[R]**
 
+### SOLID Compliance (added CHG-024)
+
+- [ ] No backend `app/` module exceeds line count cap (initially 1300, strict: 400) **[H]** _(make dod + test_layering.py)_
+- [ ] No frontend `src/` component exceeds line count cap (initially 400, strict: 300) **[H]** _(make dod)_
+- [ ] No `app/models/` file defines more than class count cap (initially 35, strict: 10) **[H]** _(make dod + test_layering.py)_
+- [ ] No `src/components/` file imports `apiClient` or `api-client` **[H]** _(make dod)_
+- [ ] Functions >80 lines with 3+ section comments: must split or justify in PR description **[R]**
+- [ ] New detector/step/tab must not modify existing orchestration files beyond 1 registration line **[R]**
+- [ ] Page component growing >30 net lines: logic must be extracted to hooks/sub-components **[R]**
+- [ ] New imports flow high→low (services→protocols, not services→concrete impls) **[R]**
+- [ ] Adding fields to 10+ field dataclass: verify all consumers need the new field **[R]**
+- [ ] Optional props that change rendering behavior: must split into single-contract variants **[R]**
+
 ### Scope
 
 - [ ] `git diff main` touches ONLY files related to the change **[R]** _(heuristic: Review Agent inspects diff)_

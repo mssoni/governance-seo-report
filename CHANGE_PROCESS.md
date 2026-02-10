@@ -797,8 +797,15 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
    - ARCHITECTURE.md, PROGRESS.md, CHANGE_LOG.md updated?
    - Scope: git diff touches only change-related files?
    - Contract version bumped if schema changed?
-5. Review code quality: schema alignment, copy tone, accessibility
-6. Check for flaky tests (FLAKY_TESTS.md protocol)
+5. SOLID compliance review (DEFINITION_OF_DONE.md "SOLID Compliance" section):
+   - R-SOLID-1: Functions >80 lines with 3+ section comments → must split or justify
+   - R-SOLID-2: New detector/step/tab adds only a registration line to orchestration files
+   - R-SOLID-3: Page growing >30 net lines → logic in hooks/sub-components
+   - R-SOLID-4: New imports flow high→low; services depend on protocols not concrete impls
+   - R-SOLID-5: Fields added to 10+ field dataclass → verify all consumers need it
+   - R-SOLID-6: Optional props that switch rendering → split into single-contract variants
+6. Review code quality: schema alignment, copy tone, accessibility
+7. Check for flaky tests (FLAKY_TESTS.md protocol)
 
 ## PHASE 3: FIX OR REJECT (code-level issues found during Phase 2 review)
 7. Auto-fix small code issues: missing log_event() calls, missing doc entries,

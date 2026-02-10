@@ -207,7 +207,7 @@ cd ../frontend && git checkout main && git merge --no-ff change/CHG-NNN-desc -m 
 During Step 6 (REVIEW), reject immediately if ANY of these conditions are true:
 
 1. `make check` fails in any affected repo
-2. `make dod` fails in any affected repo
+2. `make dod` fails in any affected repo (includes SOLID hard gates H-SOLID-1 through H-SOLID-5)
 3. Live network calls found in test files (not mocked)
 4. IO imports found in pure modules (detectors, reasoning, seo, models)
 5. `print()` or `console.log()` in production code
@@ -217,6 +217,7 @@ During Step 6 (REVIEW), reject immediately if ANY of these conditions are true:
 9. CHANGE_LOG.md entry missing or incomplete
 10. ARCHITECTURE.md not updated for code changes
 11. Out of Scope section missing from stories
+12. SOLID review items (R-SOLID-1 through R-SOLID-6) violated — see DEFINITION_OF_DONE.md "SOLID Compliance"
 
 ### Kill Switch (Attempt Budget)
 
