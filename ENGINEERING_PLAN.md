@@ -35,6 +35,7 @@
 | 1.23.0 | 2026-02-10 | CHG-024 | SOLID compliance checks added to DoD enforcement (check_dod.sh, test_layering.py, DEFINITION_OF_DONE.md, Review Agent template). Permissive thresholds. No production code changes |
 | 1.24.0 | 2026-02-10 | CHG-025 | Split schemas.py (34 classes) into 6 domain modules (enums, requests, governance, seo, responses, transparency). Barrel re-export. 14 new tests |
 | 1.25.0 | 2026-02-10 | CHG-026 | Detector protocol + registry. 8 detectors self-register via @register_detector. engine.py iterates DETECTOR_REGISTRY. 8 new tests |
+| 1.26.0 | 2026-02-10 | CHG-027 | Extract report-building from pipeline.py → reasoning/report_builder.py + services/error_classifier.py. pipeline.py 1256→686 lines. 18 new tests |
 
 ## Current Statistics
 
@@ -42,13 +43,13 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 495 |
+| Backend tests | 515 |
 | Frontend tests | 173 |
-| **Total tests** | **668** |
+| **Total tests** | **688** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 26 (CHG-001 through CHG-026) |
+| Post-V1 changes | 27 (CHG-001 through CHG-027) |
 | Contract version | 1.8.0 |
 
 ## Architecture Overview

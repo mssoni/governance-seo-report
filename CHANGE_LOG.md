@@ -37,6 +37,28 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-027: Extract report-building functions from pipeline.py
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-027: extract ~570 lines of pure report-building logic from pipeline.py into reasoning/report_builder.py and services/error_classifier.py
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-027-report-builder
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Extract build_executive_summary, build_metrics, build_top_improvements, LIMITATIONS to reasoning/report_builder.py (backend)
+  - [x] Story 2: Extract PipelineCrawlError, categorize_fetch_error, is_html_content to services/error_classifier.py (backend)
+  - [x] Story 3: Wire pipeline.py to use new modules with backward-compat aliases (backend)
+- **Files Changed**:
+  - Backend: app/reasoning/report_builder.py (NEW), app/services/error_classifier.py (NEW), app/services/pipeline.py, tests/test_report_builder.py (NEW), ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +18 added, 0 modified
+- **Review**: APPROVED (inline — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 9/9 checks)
+
+---
+
 ### CHG-026: Detector protocol and registry in engine.py
 
 - **Date**: 2026-02-10

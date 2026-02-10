@@ -256,6 +256,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend). STANDARD mode. Full process followed.
 
+### TX-2026-02-10-027 — CHG-027
+
+- **status:** COMPLETED
+- **change_id:** CHG-027
+- **backend_branch:** change/CHG-027-report-builder
+- **frontend_branch:** n/a
+- **backend_merge_commit:** e1a78b5
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Extract report-building functions from pipeline.py → reasoning/report_builder.py + services/error_classifier.py. pipeline.py 1256→686 lines. 18 new tests. STANDARD mode.
+
 ### TX-2026-02-10-026 — CHG-026
 
 - **status:** COMPLETED
