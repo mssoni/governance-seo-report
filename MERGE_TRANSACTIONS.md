@@ -258,14 +258,14 @@
 
 ### TX-2026-02-10-025 — CHG-025
 
-- **status:** STARTED
+- **status:** COMPLETED
 - **change_id:** CHG-025
 - **backend_branch:** change/CHG-025-split-schemas
 - **frontend_branch:** n/a
-- **backend_merge_commit:** (pending)
+- **backend_merge_commit:** 901a8ff
 - **frontend_merge_commit:** n/a
-- **manifest_commit:** (pending)
-- **notes:** Backend-only. Split schemas.py into 6 domain modules with barrel re-export. 14 new tests. STANDARD mode.
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Split schemas.py (34 classes) into 6 domain modules. Barrel re-export preserves all imports. 14 new tests. STANDARD mode.
 
 ### TX-2026-02-10-024 — CHG-024
 

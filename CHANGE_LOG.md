@@ -40,7 +40,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 ### CHG-025: Split schemas.py into domain-grouped modules
 
 - **Date**: 2026-02-10
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETE
 - **Labels**: (none)
 - **Request**: Split monolithic schemas.py (34 classes) into 6 domain-grouped modules for SRP/ISP improvement.
 - **Scope**: backend-only
