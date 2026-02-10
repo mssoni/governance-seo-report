@@ -1,4 +1,4 @@
-# Change Process v2.3
+# Change Process v2.4
 
 > How changes are requested, developed, reviewed, and merged after V1 is complete.
 > v2.0: merge safety, contract versioning, IO boundaries, flaky test protocol, deterministic rejection.
@@ -9,6 +9,7 @@
 > response size cap, redirect re-validation, data migration placeholder rules.
 > v2.3: intent→outcome framing, risk classification, pre-flight invariant checks, mandatory
 > out-of-scope, global default behavior rules, confidence signal, "unlocks later" field.
+> v2.4: periodic documentation sync rule — every 5 changes, full doc audit + ENGINEERING_PLAN.md refresh.
 
 ## Overview
 
@@ -273,6 +274,27 @@ If during INLINE execution the orchestrator discovers the change unexpectedly to
 This is not a failure — it's the process working correctly.
 
 **INLINE mode is single-brain execution, not a quick hack. All gates still apply.**
+
+---
+
+## 2.2 Periodic Documentation Sync (Every 5 Changes)
+
+**Rule:** Every 5th change (CHG-005, CHG-010, CHG-015, CHG-020, CHG-025, ...) **must** include a full documentation sync as part of Step 4 (DOCUMENT). This is in addition to the per-change documentation updates.
+
+**What to update during a periodic sync:**
+
+| Document | Action |
+|----------|--------|
+| `ENGINEERING_PLAN.md` | Add version history rows for all changes since last update. Refresh Current Statistics (test counts, endpoints, components, contract version, post-V1 count). Update Architecture Overview diagram if new modules/services were added. |
+| `CHANGE_LOG.md` | Verify all entries CHG-001 through current are present and have correct status |
+| `backend/ARCHITECTURE.md` | Verify file tree, interfaces, and change log are current |
+| `frontend/ARCHITECTURE.md` | Verify file tree, components, and change log are current |
+| `backend/CONTRACTS.md` + `frontend/CONTRACTS.md` | Verify version sync with `CHANGE_MANIFEST.json` |
+| `CHANGE_MANIFEST.json` | Verify commit SHAs, contract version, and last_change_id are accurate |
+
+**Trigger:** The `validate_change.sh` script already WARNs when ENGINEERING_PLAN.md is stale. During a periodic sync change, this WARN becomes a blocking requirement.
+
+**If a sync is overdue** (>5 changes since last ENGINEERING_PLAN.md update), the next change **must** include the sync regardless of whether it falls on a 5th boundary.
 
 ---
 

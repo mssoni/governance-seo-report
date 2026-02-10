@@ -46,7 +46,7 @@
 
 - [ ] `ARCHITECTURE.md` updated (new files, changed interfaces, dependency changes) **[R]**
 - [ ] `PROGRESS.md` updated with change entry and test counts **[R]**
-- [ ] `ENGINEERING_PLAN.md` updated if due — Version History row + Current Statistics refreshed every 5 changes or on significant architecture/endpoint/test-count change (verify with `./scripts/plan_stats.sh`) **[R]**
+- [ ] `ENGINEERING_PLAN.md` updated if due — Version History row + Current Statistics refreshed **every 5 changes** or on significant architecture/endpoint/test-count change (verify with `./scripts/plan_stats.sh`). See CHANGE_PROCESS.md §2.2 for full sync checklist. **[R]**
 - [ ] `CURRENT_TASKS.md` lock released **[R]**
 - [ ] `CHANGE_LOG.md` entry exists with correct Change ID **[R]**
 

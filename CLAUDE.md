@@ -174,7 +174,7 @@ Mode controls *who* runs steps 3-6 (orchestrator vs spawned agents), not *whethe
 | 1. DECOMPOSE | Context gather, pre-flight, outcome, stories, confidence, mode — output to user |
 | 2. BRANCH | `change/CHG-NNN-desc` in each affected submodule (never commit to main) |
 | 3. DEVELOP | TDD: write test → must fail → implement → must pass → `make check` |
-| 4. DOCUMENT | Update ARCHITECTURE.md, PROGRESS.md, CHANGE_LOG.md; ENGINEERING_PLAN.md every 5 changes or on significant arch change |
+| 4. DOCUMENT | Update ARCHITECTURE.md, PROGRESS.md, CHANGE_LOG.md; **every 5 changes**: full doc sync per CHANGE_PROCESS.md §2.2 (ENGINEERING_PLAN.md version history + stats, verify all docs current) |
 | 5. DOD | Run `make dod` in affected repos, walk DEFINITION_OF_DONE.md checklist |
 | 6. REVIEW | STANDARD: spawn review agent. INLINE: review inline (git diff, auto-reject triggers) |
 | 7. MERGE GATE | `./scripts/validate_change.sh CHG-NNN` must pass, then atomic `--no-ff` merge |
