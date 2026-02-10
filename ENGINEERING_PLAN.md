@@ -32,6 +32,8 @@
 | 1.20.0 | 2026-02-10 | CHG-021 | Pipeline timeout increased 450→750s. Config-only change |
 | 1.21.0 | 2026-02-10 | CHG-022 | Concurrent page fetching via asyncio.gather + semaphore. max_concurrent_page_fetches config (default 5). Soup collection ~300s→~60s. 6 new tests |
 | 1.22.0 | 2026-02-10 | CHG-023 | Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend) |
+| 1.23.0 | 2026-02-10 | CHG-024 | SOLID compliance checks added to DoD enforcement (check_dod.sh, test_layering.py, DEFINITION_OF_DONE.md, Review Agent template). Permissive thresholds. No production code changes |
+| 1.24.0 | 2026-02-10 | CHG-025 | Split schemas.py (34 classes) into 6 domain modules (enums, requests, governance, seo, responses, transparency). Barrel re-export. 14 new tests |
 
 ## Current Statistics
 
@@ -39,13 +41,13 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 473 |
+| Backend tests | 487 |
 | Frontend tests | 173 |
-| **Total tests** | **646** |
+| **Total tests** | **660** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 24 (CHG-001 through CHG-024) |
+| Post-V1 changes | 25 (CHG-001 through CHG-025) |
 | Contract version | 1.8.0 |
 
 ## Architecture Overview

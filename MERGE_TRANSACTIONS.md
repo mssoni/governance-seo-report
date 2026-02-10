@@ -256,6 +256,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend). STANDARD mode. Full process followed.
 
+### TX-2026-02-10-025 — CHG-025
+
+- **status:** STARTED
+- **change_id:** CHG-025
+- **backend_branch:** change/CHG-025-split-schemas
+- **frontend_branch:** n/a
+- **backend_merge_commit:** (pending)
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (pending)
+- **notes:** Backend-only. Split schemas.py into 6 domain modules with barrel re-export. 14 new tests. STANDARD mode.
+
 ### TX-2026-02-10-024 — CHG-024
 
 - **status:** COMPLETED

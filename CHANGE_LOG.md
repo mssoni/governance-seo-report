@@ -37,6 +37,27 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-025: Split schemas.py into domain-grouped modules
+
+- **Date**: 2026-02-10
+- **Status**: IN_PROGRESS
+- **Labels**: (none)
+- **Request**: Split monolithic schemas.py (34 classes) into 6 domain-grouped modules for SRP/ISP improvement.
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-025-split-schemas
+- **Contract Version**: (unchanged, 1.8.0)
+- **Stories**:
+  - [x] Story 1: Split 34 classes into 6 domain files with barrel re-export in schemas.py
+- **Files Changed**:
+  - Backend: `app/models/enums.py` (new), `app/models/requests.py` (new), `app/models/governance.py` (new), `app/models/seo.py` (new), `app/models/responses.py` (new), `app/models/transparency.py` (new), `app/models/schemas.py` (rewritten as barrel), `tests/test_schema_split.py` (new)
+- **Tests**: +14 added (test_schema_split.py)
+- **Review**: APPROVED (INLINE review — all auto-reject triggers pass, `make check` + `make dod` green)
+- **DoD**: PASSED (`make dod` green)
+- **Out of Scope**: Changing model fields, renaming classes, modifying consumers, strict class count threshold (CHG-035)
+
+---
+
 ### CHG-024: Add SOLID compliance checks to DoD and review process
 
 - **Date**: 2026-02-10
