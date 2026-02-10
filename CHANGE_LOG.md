@@ -37,6 +37,75 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-023: Pipeline Performance Optimization
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: [SCHEMA_CHANGE]
+- **Request**: Pipeline slow due to duplicate page fetching, redundant robots.txt requests, and 3×N per-issue Gemini calls; optimize all three and batch Gemini into single call with issue_insights in Business Overview
+- **Scope**: both
+- **Mode**: STANDARD
+- **Branch**: change/CHG-023-pipeline-perf
+- **Contract Version**: 1.7.0 → 1.8.0
+- **Stories**:
+  - [x] Story 1: robots.txt cache — eliminate redundant same-domain fetches (backend)
+  - [x] Story 2: Eliminate duplicate page fetching + parallelize sampler (backend)
+  - [x] Story 3: Batch Gemini into single call + issue_insights in Business Overview (both)
+- **Files Changed**:
+  - Backend: `app/crawlers/html_fetcher.py`, `app/crawlers/page_sampler.py`, `app/services/pipeline.py`, `app/reasoning/gemini_summarizer.py`, `app/models/schemas.py`, `tests/test_html_fetcher.py`, `tests/test_page_sampler.py`, `tests/test_pipeline.py`, `tests/test_gemini_summarizer.py`, `tests/test_error_handling.py`, `tests/test_seo_pipeline.py`, `tests/fixtures/reports/governance-report.json`, `CONTRACTS.md`, `ARCHITECTURE.md`, `PROGRESS.md`
+  - Frontend: `src/types/api.ts`, `src/components/report/ExecutiveStory.tsx`, `src/pages/ReportPage.tsx`, `src/components/report/__tests__/executive-story.test.tsx`, `src/mocks/golden/governance-report.json`, `CONTRACTS.md`, `ARCHITECTURE.md`, `PROGRESS.md`
+- **Tests**: +16 added (13 backend + 3 frontend), 6 modified
+- **Out of Scope**: Shared httpx client (SSRF risk), persistent cross-run caching, redesigning issue detail panel, changing SEO report
+- **Review**: APPROVED
+- **DoD**: PASSED (`make dod` green in both repos)
+- **Notes**: Reduces Gemini calls from 3N+1 to 1. Eliminates ~19 redundant robots.txt fetches and double page fetching. Pipeline reuses sampler soups directly. Business Overview shows "Key Findings" blue-bordered list from batch issue_insights.
+
+---
+
+### CHG-022: Concurrent Page Fetching
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Pipeline still timing out because sequential page soup collection takes ~300s worst-case; convert to concurrent fetching
+- **Scope**: backend-only
+- **Mode**: STANDARD
+- **Branch**: change/CHG-022-concurrent-page-fetch
+- **Contract Version**: 1.7.0 (no change)
+- **Stories**:
+  - [x] Story 1: Concurrent soup fetching with asyncio.gather + semaphore
+  - [x] Story 2: Config setting max_concurrent_page_fetches (default 5)
+  - [x] Story 3: Tests + documentation
+- **Files Changed**: `app/services/pipeline.py`, `app/core/config.py`, `.env.example`, `tests/test_pipeline.py`, `tests/test_seo_pipeline.py`, `tests/test_error_handling.py`, `ARCHITECTURE.md`, `PROGRESS.md`
+- **Tests**: +6 new, 3 modified (mock settings in seo_pipeline, error_handling, pipeline)
+- **Out of Scope**: Per-domain rate limiting, parallelizing other pipeline steps (PSI, Gemini), adaptive concurrency
+- **Review**: APPROVED
+- **DoD**: PASSED
+- **Notes**: Reduces worst-case soup collection from ~300s (20×15s sequential) to ~60s (4 batches × 15s). Semaphore prevents Playwright resource exhaustion.
+
+---
+
+### CHG-021: Increase Pipeline Timeout to 750s
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: Pipeline failing after 450s with expanded detectors and Gemini prompts; increase to 750s
+- **Scope**: backend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-021-increase-timeout-750
+- **Contract Version**: 1.7.0 (no change)
+- **Stories**:
+  - [x] Story 1: `pipeline_timeout_seconds` 450→750
+- **Files Changed**: `app/core/config.py`, `.env.example`, `app/services/pipeline.py` (docstring), `ARCHITECTURE.md`, `tests/test_pipeline.py`, `tests/test_error_handling.py`, `tests/test_health.py`
+- **Tests**: 0 new (existing assertions updated 450→750)
+- **Out of Scope**: dynamic/per-URL timeout config, timeout alerting, changing fetch_timeout_seconds
+- **Review**: INLINE
+- **DoD**: PASSED
+- **Notes**: Config-only change. Needed after CHG-014/015/019/020 added more pipeline work.
+
+---
+
 ### CHG-020: Honest 5+5 Bulleted Lists in Business Overview
 
 - **Date**: 2026-02-10

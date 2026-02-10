@@ -1,12 +1,12 @@
 {
-  "contract_version": "1.7.0",
-  "last_change_id": "CHG-020",
-  "backend_commit": "3f6545b",
-  "frontend_commit": "8e98ebe",
+  "contract_version": "1.8.0",
+  "last_change_id": "CHG-023",
+  "backend_commit": "0e81416",
+  "frontend_commit": "891a8bd",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-020: Honest 5+5 bulleted lists in Business Overview. PersonalizedContent gains whats_working + needs_attention. Gemini prompt expanded with page context + honest tone rules. Frontend pills replaced with bulleted lists. Contract 1.7.0 (no change)."
+  "notes": "CHG-023: Pipeline performance optimization. Additive schema — issue_insights field on GovernanceReport."
 }

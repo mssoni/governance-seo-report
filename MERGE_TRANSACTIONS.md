@@ -222,3 +222,36 @@
 - **frontend_merge_commit:** n/a
 - **manifest_commit:** (workspace root)
 - **notes:** Backend-only. Fix zip() length mismatch in page/soup collection. 1 new test. INLINE mode. Full process followed.
+
+### TX-2026-02-10-021 — CHG-021
+
+- **status:** COMPLETED
+- **change_id:** CHG-021
+- **backend_branch:** change/CHG-021-increase-timeout-750
+- **frontend_branch:** n/a
+- **backend_merge_commit:** e66f831
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. pipeline_timeout_seconds 450→750. Config-only. INLINE mode. Full process followed.
+
+### TX-2026-02-10-022 — CHG-022
+
+- **status:** COMPLETED
+- **change_id:** CHG-022
+- **backend_branch:** change/CHG-022-concurrent-page-fetch
+- **frontend_branch:** n/a
+- **backend_merge_commit:** e794f81
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Concurrent page fetching via asyncio.gather + semaphore. 6 new tests. STANDARD mode. Full process followed.
+
+### TX-2026-02-10-023 — CHG-023
+
+- **status:** COMPLETED
+- **change_id:** CHG-023
+- **backend_branch:** change/CHG-023-pipeline-perf
+- **frontend_branch:** change/CHG-023-pipeline-perf
+- **backend_merge_commit:** 0e81416
+- **frontend_merge_commit:** 891a8bd
+- **manifest_commit:** (workspace root)
+- **notes:** Both repos. Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend). STANDARD mode. Full process followed.
