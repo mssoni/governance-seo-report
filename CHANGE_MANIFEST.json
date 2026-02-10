@@ -1,12 +1,12 @@
 {
   "contract_version": "1.8.0",
-  "last_change_id": "CHG-023",
-  "backend_commit": "0e81416",
-  "frontend_commit": "891a8bd",
+  "last_change_id": "CHG-024",
+  "backend_commit": "febc10c",
+  "frontend_commit": "99df5ef",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-023: Pipeline performance optimization. Additive schema — issue_insights field on GovernanceReport."
+  "notes": "CHG-024: SOLID compliance checks added to DoD enforcement. No schema change."
 }

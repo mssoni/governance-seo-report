@@ -40,7 +40,7 @@ This separation makes it possible to filter/automate on status without ambiguity
 ### CHG-024: Add SOLID compliance checks to DoD and review process
 
 - **Date**: 2026-02-10
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETE
 - **Labels**: (none)
 - **Request**: Embed SOLID principle checks into the Review Agent, DoD enforcement scripts, and test_layering.py so regressions are caught automatically.
 - **Scope**: both + workspace

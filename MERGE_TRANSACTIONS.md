@@ -258,11 +258,11 @@
 
 ### TX-2026-02-10-024 — CHG-024
 
-- **status:** STARTED
+- **status:** COMPLETED
 - **change_id:** CHG-024
 - **backend_branch:** change/CHG-024-solid-compliance-checks
 - **frontend_branch:** change/CHG-024-solid-compliance-checks
-- **backend_merge_commit:** (pending)
-- **frontend_merge_commit:** (pending)
-- **manifest_commit:** (pending)
-- **notes:** Both repos + workspace. Add SOLID compliance checks to DoD enforcement scripts, test_layering.py, DEFINITION_OF_DONE.md, and Review Agent template. INLINE mode.
+- **backend_merge_commit:** febc10c
+- **frontend_merge_commit:** 99df5ef
+- **manifest_commit:** (workspace root)
+- **notes:** Both repos + workspace. SOLID compliance checks: backend check_dod.sh [8/9]+[9/9], frontend check_dod.sh [7/8]+[8/8], test_layering.py TestClassCountEnforcement+TestModuleLineCounts, DEFINITION_OF_DONE.md SOLID section, Review Agent template SOLID phase. INLINE mode. No production code changes.
