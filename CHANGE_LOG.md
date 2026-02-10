@@ -37,6 +37,25 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-031: Extract ReportPage tab content + content map
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-031: extract 4 inline component definitions from ReportPage.tsx into dedicated component files for SRP/OCP
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-031-tab-content-map
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Extract GovernanceContent, BusinessContent, SEOContent, SEOPollingProgress into components/report/ (frontend)
+  - [x] Story 2: Replace inline definitions in ReportPage.tsx with imports (frontend)
+- **Files Changed**:
+  - Frontend: src/components/report/GovernanceContent.tsx (NEW), src/components/report/BusinessContent.tsx (NEW), src/components/report/SEOContent.tsx (NEW), src/components/report/SEOPollingProgress.tsx (NEW), src/pages/ReportPage.tsx, src/components/report/__tests__/tab-content-extraction.test.tsx (NEW), ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +7 added, 0 modified (existing 12 report-page tests pass unchanged)
+- **Review**: APPROVED (inline — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 8/8 checks)
+
 ### CHG-030: Split gemini_summarizer.py with SummarizerProtocol
 
 - **Date**: 2026-02-10

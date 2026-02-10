@@ -332,3 +332,14 @@
 - **frontend_merge_commit:** 99df5ef
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos + workspace. SOLID compliance checks: backend check_dod.sh [8/9]+[9/9], frontend check_dod.sh [7/8]+[8/8], test_layering.py TestClassCountEnforcement+TestModuleLineCounts, DEFINITION_OF_DONE.md SOLID section, Review Agent template SOLID phase. INLINE mode. No production code changes.
+
+### TX-2026-02-10-031 — CHG-031
+
+- **status:** COMPLETED
+- **change_id:** CHG-031
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-031-tab-content-map
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** bd6045f
+- **manifest_commit:** (workspace root)
+- **notes:** Frontend-only. Extract ReportPage tab content into 4 dedicated components. INLINE mode. 180 frontend tests, 7 new.
