@@ -256,6 +256,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Both repos. Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend). STANDARD mode. Full process followed.
 
+### TX-2026-02-10-028 — CHG-028
+
+- **status:** COMPLETED
+- **change_id:** CHG-028
+- **backend_branch:** change/CHG-028-pipeline-steps
+- **frontend_branch:** n/a
+- **backend_merge_commit:** 9d7c3e4
+- **frontend_merge_commit:** n/a
+- **manifest_commit:** (workspace root)
+- **notes:** Backend-only. Extract 9 pipeline steps into PipelineStep classes. pipeline.py 686→247 lines. 10 new tests. STANDARD mode.
+
 ### TX-2026-02-10-027 — CHG-027
 
 - **status:** COMPLETED
