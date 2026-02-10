@@ -26,6 +26,12 @@
 | 1.14.0 | 2026-02-09 | CHG-015 | Phase 1 Pipeline Integration (completes CHG-014). 5 reasoning templates + issue builder integration + pipeline wiring. 9 new tests |
 | 1.15.0 | 2026-02-09 | CHG-016 | Business-first confidence filtering for Foundation Signals. Frontend-only. 4 tests updated |
 | 1.16.0 | 2026-02-09 | CHG-017 | Playwright CDP fallback for PSI API failures. New cdp_perf_client.py + psi_client.py fallback. 21 new tests |
+| 1.17.0 | 2026-02-09 | CHG-018 | Segment-aware personalized business overview. SegmentProfile classifier + Gemini-generated PersonalizedContent + CategoryInsight model. Contract 1.6.0→1.7.0. 49 new tests |
+| 1.18.0 | 2026-02-09 | CHG-019 | Fix zip() length mismatch in page/soup collection. Lockstep build for pages[] and soups[]. 1 new test |
+| 1.19.0 | 2026-02-10 | CHG-020 | Honest 5+5 bulleted lists in Business Overview. PersonalizedContent gains whats_working/needs_attention. Gemini prompt with page context + honest tone rules. 12 new tests |
+| 1.20.0 | 2026-02-10 | CHG-021 | Pipeline timeout increased 450→750s. Config-only change |
+| 1.21.0 | 2026-02-10 | CHG-022 | Concurrent page fetching via asyncio.gather + semaphore. max_concurrent_page_fetches config (default 5). Soup collection ~300s→~60s. 6 new tests |
+| 1.22.0 | 2026-02-10 | CHG-023 | Pipeline performance optimization: robots.txt cache, parallel sampler with soups, batch Gemini issue_insights. Contract 1.7.0→1.8.0. 16 new tests (13 backend + 3 frontend) |
 
 ## Current Statistics
 
@@ -33,14 +39,14 @@
 
 | Metric | Count |
 |--------|-------|
-| Backend tests | 395 |
-| Frontend tests | 161 |
-| **Total tests** | **556** |
+| Backend tests | 473 |
+| Frontend tests | 173 |
+| **Total tests** | **646** |
 | API endpoints | 6 |
 | Frontend components | 22 |
 | V1 user stories | 23 |
-| Post-V1 changes | 17 (CHG-001 through CHG-017) |
-| Contract version | 1.6.0 |
+| Post-V1 changes | 23 (CHG-001 through CHG-023) |
+| Contract version | 1.8.0 |
 
 ## Architecture Overview
 
@@ -65,6 +71,7 @@ graph TB
         CrawlPipeline --> HTMLFetcher
         CrawlPipeline --> SitemapParser
         CrawlPipeline --> PageSampler
+        CrawlPipeline -->|"asyncio.gather (CHG-022)"| ConcurrentFetch["Concurrent Soup Fetch"]
         HTMLFetcher --> BeautifulSoup
         HTMLFetcher --> PlaywrightFallback
         CrawlPipeline --> DetectorEngine
@@ -72,11 +79,19 @@ graph TB
         DetectorEngine --> A11yDetector
         DetectorEngine --> SecurityDetector
         DetectorEngine --> IntegrationDetector
+        DetectorEngine --> FoundationSignals["Foundation Signals (CHG-014)"]
+        FoundationSignals --> SiteAgeDetector
+        FoundationSignals --> PartnerDetector
+        FoundationSignals --> ComplexityDetector
+        FoundationSignals --> InventoryAnalyzer
+        FoundationSignals --> TechnicalDebtScorer
         CrawlPipeline --> PSIClient
-        DetectorEngine --> ReasoningEngine
+        PSIClient -->|"CDP fallback (CHG-017)"| CDPPerfClient
+        CrawlPipeline --> ReasoningEngine
         ReasoningEngine --> TemplateLibrary
         ReasoningEngine --> BusinessGoals["BusinessGoals (CHG-006)"]
-        ReasoningEngine --> GeminiSummarizer
+        ReasoningEngine --> SegmentClassifier["SegmentClassifier (CHG-018)"]
+        ReasoningEngine --> GeminiSummarizer["GeminiSummarizer (CHG-018/020)"]
         ReasoningEngine --> ReportBuilder
         APIRouter --> SuggestCompetitors["SuggestEndpoint (CHG-008)"]
         SuggestCompetitors -->|"Two-step search (CHG-011)"| PlacesClient
@@ -85,6 +100,7 @@ graph TB
 
     subgraph external [External APIs]
         PSIClient -->|HTTPS| GooglePSI
+        CDPPerfClient -->|"Headless Chromium"| LocalBrowser
         PlacesClient -->|HTTPS| GooglePlaces
         GeminiSummarizer -->|HTTPS| GeminiAPI
     end
@@ -105,7 +121,7 @@ graph TB
 
 | Layer         | Choice                                                |
 | ------------- | ----------------------------------------------------- |
-| Frontend      | React 18 + Vite + TypeScript                          |
+| Frontend      | React 19 + Vite 7 + TypeScript 5.9                    |
 | Styling       | Tailwind CSS v4                                       |
 | FE Testing    | Vitest + React Testing Library                        |
 | Backend       | Python 3.12 + FastAPI + uvicorn                       |
