@@ -37,6 +37,26 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-034: Split SidePanel dual contract
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-034: split SidePanel optional-prop dual rendering into BusinessSidePanel + TechnicalSidePanel single-contract components for LSP
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-034-split-sidepanel
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Extract BusinessSidePanel with required `topImprovements` prop (frontend)
+  - [x] Story 2: Extract TechnicalSidePanel with required `issues` prop (frontend)
+  - [x] Story 3: Reduce SidePanel to thin dispatcher (frontend)
+- **Files Changed**:
+  - Frontend: src/components/report/BusinessSidePanel.tsx (NEW), src/components/report/TechnicalSidePanel.tsx (NEW), src/components/report/SidePanel.tsx (97→18 lines), ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +0 added, 0 modified (existing 6 side-panel tests pass unchanged via dispatcher)
+- **Review**: APPROVED (inline — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 8/8 checks)
+
 ### CHG-033: Split BusinessImpactCategories dual rendering
 
 - **Date**: 2026-02-10

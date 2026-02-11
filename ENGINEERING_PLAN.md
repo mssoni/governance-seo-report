@@ -42,6 +42,7 @@
 | 1.30.0 | 2026-02-10 | CHG-031 | Extract ReportPage tab content into 4 dedicated components. ReportPage 397→294 lines. 7 new tests |
 | 1.31.0 | 2026-02-10 | CHG-032 | Extract page API calls into useGovernanceSubmit + useSeoSubmit hooks. Both pages zero apiClient imports. 9 new tests |
 | 1.32.0 | 2026-02-10 | CHG-033 | Split BusinessImpactCategories dual rendering into PersonalizedCategoryCards + LegacyCategoryCards single-contract components. 0 new tests (10 existing pass via dispatcher) |
+| 1.33.0 | 2026-02-10 | CHG-034 | Split SidePanel dual contract into BusinessSidePanel + TechnicalSidePanel single-contract components. 0 new tests (6 existing pass via dispatcher) |
 
 ## Current Statistics
 
@@ -53,9 +54,9 @@
 | Frontend tests | 189 |
 | **Total tests** | **744** |
 | API endpoints | 6 |
-| Frontend components | 28 |
+| Frontend components | 30 |
 | V1 user stories | 23 |
-| Post-V1 changes | 33 (CHG-001 through CHG-033) |
+| Post-V1 changes | 34 (CHG-001 through CHG-034) |
 | Contract version | 1.8.0 |
 
 ## Architecture Overview

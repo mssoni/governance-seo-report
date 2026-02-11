@@ -1,12 +1,12 @@
 {
   "contract_version": "1.8.0",
-  "last_change_id": "CHG-033",
+  "last_change_id": "CHG-034",
   "backend_commit": "ba7513c",
-  "frontend_commit": "0b67d53",
+  "frontend_commit": "b99ae9b",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-033: Split BusinessImpactCategories dual rendering into single-contract components. No schema change."
+  "notes": "CHG-034: Split SidePanel dual contract into BusinessSidePanel + TechnicalSidePanel. No schema change."
 }

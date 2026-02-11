@@ -355,6 +355,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Frontend-only. Extract page API calls into useGovernanceSubmit + useSeoSubmit hooks. INLINE mode. 189 frontend tests, 9 new.
 
+### TX-2026-02-10-034 — CHG-034
+
+- **status:** COMPLETED
+- **change_id:** CHG-034
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-034-split-sidepanel
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** b99ae9b
+- **manifest_commit:** (workspace root)
+- **notes:** Frontend-only. Split SidePanel dual contract into BusinessSidePanel + TechnicalSidePanel. 0 new tests (6 existing pass via dispatcher). INLINE mode.
+
 ### TX-2026-02-10-033 — CHG-033
 
 - **status:** COMPLETED
