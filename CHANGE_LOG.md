@@ -37,6 +37,26 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-033: Split BusinessImpactCategories dual rendering
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-033: split BusinessImpactCategories optional-prop dual rendering into PersonalizedCategoryCards + LegacyCategoryCards single-contract components for LSP
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-033-split-business-impact
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Extract PersonalizedCategoryCards with required `insights` prop (frontend)
+  - [x] Story 2: Extract LegacyCategoryCards with required `issues` prop (frontend)
+  - [x] Story 3: Reduce BusinessImpactCategories to thin dispatcher (frontend)
+- **Files Changed**:
+  - Frontend: src/components/report/PersonalizedCategoryCards.tsx (NEW), src/components/report/LegacyCategoryCards.tsx (NEW), src/components/report/BusinessImpactCategories.tsx (217→19 lines), ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +0 added, 0 modified (existing 10 business-impact tests pass unchanged via dispatcher)
+- **Review**: APPROVED (inline — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 8/8 checks)
+
 ### CHG-032: Extract page API calls into hooks
 
 - **Date**: 2026-02-10

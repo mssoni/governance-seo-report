@@ -354,3 +354,14 @@
 - **frontend_merge_commit:** a38a337
 - **manifest_commit:** (workspace root)
 - **notes:** Frontend-only. Extract page API calls into useGovernanceSubmit + useSeoSubmit hooks. INLINE mode. 189 frontend tests, 9 new.
+
+### TX-2026-02-10-033 — CHG-033
+
+- **status:** COMPLETED
+- **change_id:** CHG-033
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-033-split-business-impact
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** 0b67d53
+- **manifest_commit:** (workspace root)
+- **notes:** Frontend-only. Split BusinessImpactCategories dual rendering into PersonalizedCategoryCards + LegacyCategoryCards. 0 new tests (10 existing pass unchanged via dispatcher). INLINE mode.
