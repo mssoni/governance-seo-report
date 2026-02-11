@@ -37,6 +37,26 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-032: Extract page API calls into hooks
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-032: extract apiClient calls from LandingPage and ReportPage into useGovernanceSubmit and useSeoSubmit hooks for DIP
+- **Scope**: frontend-only
+- **Mode**: INLINE
+- **Branch**: change/CHG-032-extract-api-hooks
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Create useGovernanceSubmit hook (frontend)
+  - [x] Story 2: Create useSeoSubmit hook (frontend)
+  - [x] Story 3: Update LandingPage and ReportPage to use hooks (frontend)
+- **Files Changed**:
+  - Frontend: src/hooks/useGovernanceSubmit.ts (NEW), src/hooks/useSeoSubmit.ts (NEW), src/pages/LandingPage.tsx, src/pages/ReportPage.tsx, src/hooks/__tests__/useGovernanceSubmit.test.ts (NEW), src/hooks/__tests__/useSeoSubmit.test.ts (NEW), ARCHITECTURE.md, PROGRESS.md
+- **Tests**: +9 added, 0 modified (existing 12 report-page + 4 form-submission tests pass unchanged)
+- **Review**: APPROVED (inline — make check + make dod pass, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green, all 8/8 checks)
+
 ### CHG-031: Extract ReportPage tab content + content map
 
 - **Date**: 2026-02-10

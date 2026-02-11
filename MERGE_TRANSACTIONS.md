@@ -343,3 +343,14 @@
 - **frontend_merge_commit:** bd6045f
 - **manifest_commit:** (workspace root)
 - **notes:** Frontend-only. Extract ReportPage tab content into 4 dedicated components. INLINE mode. 180 frontend tests, 7 new.
+
+### TX-2026-02-10-032 — CHG-032
+
+- **status:** COMPLETED
+- **change_id:** CHG-032
+- **backend_branch:** n/a
+- **frontend_branch:** change/CHG-032-extract-api-hooks
+- **backend_merge_commit:** n/a
+- **frontend_merge_commit:** a38a337
+- **manifest_commit:** (workspace root)
+- **notes:** Frontend-only. Extract page API calls into useGovernanceSubmit + useSeoSubmit hooks. INLINE mode. 189 frontend tests, 9 new.

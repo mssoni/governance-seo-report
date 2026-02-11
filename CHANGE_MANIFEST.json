@@ -1,12 +1,12 @@
 {
   "contract_version": "1.8.0",
-  "last_change_id": "CHG-031",
+  "last_change_id": "CHG-032",
   "backend_commit": "ba7513c",
-  "frontend_commit": "bd6045f",
+  "frontend_commit": "a38a337",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-031: Extract ReportPage tab content into 4 dedicated components. No schema change."
+  "notes": "CHG-032: Extract page API calls into useGovernanceSubmit + useSeoSubmit hooks. No schema change."
 }
