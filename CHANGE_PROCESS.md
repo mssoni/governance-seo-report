@@ -788,6 +788,11 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 1. Run `make check` in both repos — if fail due to lint/format: auto-fix, re-run;
    if fail due to test/type errors → REJECT (those are dev agent's job)
 2. Run `make dod` in both repos — if fail → REJECT (no fix attempt)
+   `make dod` enforces these SOLID hard gates automatically:
+   - H-SOLID-1 (SRP): Backend module ≤800 lines (exempt: __init__.py, templates.py)
+   - H-SOLID-2 (SRP/ISP): Model file ≤12 classes per file
+   - H-SOLID-3 (SRP): Frontend component ≤400 lines (exempt: test files)
+   - H-SOLID-4 (DIP): No apiClient/api-client imports in src/components/
 3. Check 11 auto-reject triggers below — if any fire → REJECT (no fix attempt)
 
 ## PHASE 2: MANUAL CHECKLIST (run only if Phase 1 passes)
@@ -820,7 +825,7 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
     - If APPROVED: list any warnings, follow-ups, and auto-fixes applied
     - If REJECTED: list specific failing items + which dev agent should fix
 
-## 11 AUTO-REJECT TRIGGERS (deterministic, no fix attempt)
+## 12 AUTO-REJECT TRIGGERS (deterministic, no fix attempt)
 1. Contract changed without contract_version bump + fixture updates
 2. New dependency without ARCHITECTURE.md update
 3. New endpoint/component without tests
@@ -829,9 +834,10 @@ FRONTEND: /Users/mayureshsoni/CascadeProjects/governance-seo-report/frontend
 6. HTTP/Playwright import in non-IO module
 7. Non-IO module importing an IO module (layering violation)
 8. `make check` fails after review fixes
-9. `make dod` fails after review fixes
+9. `make dod` fails after review fixes (includes SOLID hard gates H-SOLID-1 through H-SOLID-4)
 10. CHANGE_LOG.md entry missing
 11. Any of the 8 lifecycle steps was skipped — regardless of execution mode (INLINE or STANDARD)
+12. SOLID review items (R-SOLID-1 through R-SOLID-6) violated — see DEFINITION_OF_DONE.md "SOLID Compliance"
 
 Plus umbrella rule: reject if ANY DoD checklist item fails.
 

@@ -207,7 +207,11 @@ cd ../frontend && git checkout main && git merge --no-ff change/CHG-NNN-desc -m 
 During Step 6 (REVIEW), reject immediately if ANY of these conditions are true:
 
 1. `make check` fails in any affected repo
-2. `make dod` fails in any affected repo (includes SOLID hard gates H-SOLID-1 through H-SOLID-5)
+2. `make dod` fails in any affected repo — this includes SOLID hard gates:
+   - **H-SOLID-1 (SRP):** Backend module exceeds 800 lines (`app/`; exempt: `__init__.py`, `templates.py`)
+   - **H-SOLID-2 (SRP/ISP):** Model file exceeds 12 classes (`app/models/`)
+   - **H-SOLID-3 (SRP):** Frontend component exceeds 400 lines (`src/`; exempt: test files)
+   - **H-SOLID-4 (DIP):** Component imports `apiClient` or `api-client` (`src/components/`)
 3. Live network calls found in test files (not mocked)
 4. IO imports found in pure modules (detectors, reasoning, seo, models)
 5. `print()` or `console.log()` in production code
@@ -217,7 +221,13 @@ During Step 6 (REVIEW), reject immediately if ANY of these conditions are true:
 9. CHANGE_LOG.md entry missing or incomplete
 10. ARCHITECTURE.md not updated for code changes
 11. Out of Scope section missing from stories
-12. SOLID review items (R-SOLID-1 through R-SOLID-6) violated — see DEFINITION_OF_DONE.md "SOLID Compliance"
+12. SOLID review items violated (Review Agent judgment — see DEFINITION_OF_DONE.md "SOLID Compliance"):
+   - **R-SOLID-1 (SRP):** Functions >80 lines with 3+ section comments must split or justify
+   - **R-SOLID-2 (OCP):** New detector/step/tab modifies orchestration files beyond 1 registration line
+   - **R-SOLID-3 (SRP):** Page component growing >30 net lines without extracting logic to hooks/sub-components
+   - **R-SOLID-4 (DIP):** New imports flow low→high (concrete impls instead of protocols)
+   - **R-SOLID-5 (ISP):** Fields added to 10+ field dataclass without verifying all consumers need them
+   - **R-SOLID-6 (LSP):** Optional props that switch rendering behavior instead of single-contract variants
 
 ### Kill Switch (Attempt Budget)
 

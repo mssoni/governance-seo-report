@@ -278,8 +278,8 @@ This separation makes it possible to filter/automate on status without ambiguity
 - **Branch**: change/CHG-024-solid-compliance-checks
 - **Contract Version**: (unchanged, 1.8.0)
 - **Stories**:
-  - [ ] Story 1: Add SOLID hard gates to check_dod.sh (both repos) + test_layering.py with permissive thresholds
-  - [ ] Story 2: Add SOLID review items to DEFINITION_OF_DONE.md + update Review Agent template
+  - [x] Story 1: Add SOLID hard gates to check_dod.sh (both repos) + test_layering.py with permissive thresholds
+  - [x] Story 2: Add SOLID review items to DEFINITION_OF_DONE.md + update Review Agent template
 - **Files Changed**:
   - Workspace: `DEFINITION_OF_DONE.md`, `CHANGE_PROCESS.md`, `CLAUDE.md`
   - Backend: `scripts/check_dod.sh`, `tests/test_layering.py`

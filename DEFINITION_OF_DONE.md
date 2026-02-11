@@ -88,7 +88,7 @@
 - [ ] `MERGE_TRANSACTIONS.md` entry logged (STARTED before merge, COMPLETED after) **[H]** _(validate_change.sh)_
 - [ ] Merge uses `--no-ff` flag (creates merge commit, not fast-forward) **[H]** _(validate_change.sh)_
 
-## Auto-Reject Triggers (11 deterministic rules)
+## Auto-Reject Triggers (12 deterministic rules)
 
 If ANY of these are true, the Review Agent MUST reject immediately:
 
@@ -100,9 +100,10 @@ If ANY of these are true, the Review Agent MUST reject immediately:
 6. Any HTTP/Playwright import in a non-IO module (IO boundary violation)
 7. Any non-IO module importing an IO module (layering violation)
 8. `make check` fails after review fixes
-9. `make dod` fails after review fixes
+9. `make dod` fails after review fixes (includes SOLID hard gates H-SOLID-1 through H-SOLID-4)
 10. `CHANGE_LOG.md` entry missing for the Change ID
 11. Any of the 8 lifecycle steps was skipped — regardless of execution mode (INLINE or STANDARD) **[H]**
+12. SOLID review items (R-SOLID-1 through R-SOLID-6) violated — see "SOLID Compliance" section above **[R]**
 
 ## Execution Modes
 
