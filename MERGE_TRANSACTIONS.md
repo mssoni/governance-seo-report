@@ -355,6 +355,17 @@
 - **manifest_commit:** (workspace root)
 - **notes:** Frontend-only. Extract page API calls into useGovernanceSubmit + useSeoSubmit hooks. INLINE mode. 189 frontend tests, 9 new.
 
+### TX-2026-02-10-035 — CHG-035
+
+- **status:** COMPLETED
+- **change_id:** CHG-035
+- **backend_branch:** change/CHG-035-ratchet-thresholds
+- **frontend_branch:** change/CHG-035-ratchet-thresholds
+- **backend_merge_commit:** 1c53e6c
+- **frontend_merge_commit:** 971e5a1
+- **manifest_commit:** (workspace root)
+- **notes:** Both repos + workspace. Ratchet SOLID thresholds: backend line 1300→800, class 35→12. DEFINITION_OF_DONE.md updated. INLINE mode. 12-CHG SOLID refactoring plan complete.
+
 ### TX-2026-02-10-034 — CHG-034
 
 - **status:** COMPLETED

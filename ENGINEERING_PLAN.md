@@ -43,6 +43,7 @@
 | 1.31.0 | 2026-02-10 | CHG-032 | Extract page API calls into useGovernanceSubmit + useSeoSubmit hooks. Both pages zero apiClient imports. 9 new tests |
 | 1.32.0 | 2026-02-10 | CHG-033 | Split BusinessImpactCategories dual rendering into PersonalizedCategoryCards + LegacyCategoryCards single-contract components. 0 new tests (10 existing pass via dispatcher) |
 | 1.33.0 | 2026-02-10 | CHG-034 | Split SidePanel dual contract into BusinessSidePanel + TechnicalSidePanel single-contract components. 0 new tests (6 existing pass via dispatcher) |
+| 1.34.0 | 2026-02-10 | CHG-035 | Ratchet SOLID thresholds: backend line 1300→800, class 35→12. DEFINITION_OF_DONE.md updated. 12-CHG SOLID refactoring plan complete |
 
 ## Current Statistics
 
@@ -56,7 +57,7 @@
 | API endpoints | 6 |
 | Frontend components | 30 |
 | V1 user stories | 23 |
-| Post-V1 changes | 34 (CHG-001 through CHG-034) |
+| Post-V1 changes | 35 (CHG-001 through CHG-035) |
 | Contract version | 1.8.0 |
 
 ## Architecture Overview

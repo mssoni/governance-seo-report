@@ -37,6 +37,28 @@ This separation makes it possible to filter/automate on status without ambiguity
 
 ## Changes
 
+### CHG-035: Ratchet SOLID thresholds to strict values
+
+- **Date**: 2026-02-10
+- **Status**: COMPLETE
+- **Labels**: (none)
+- **Request**: SOLID refactoring plan — CHG-035: ratchet permissive SOLID thresholds to strict values after all refactoring CHGs complete
+- **Scope**: both
+- **Mode**: INLINE
+- **Branch**: change/CHG-035-ratchet-thresholds
+- **Contract Version**: v1.8.0 (unchanged)
+- **Stories**:
+  - [x] Story 1: Ratchet backend check_dod.sh + test_layering.py thresholds (backend)
+  - [x] Story 2: Update DEFINITION_OF_DONE.md threshold documentation (workspace)
+- **Files Changed**:
+  - Backend: scripts/check_dod.sh, tests/test_layering.py, ARCHITECTURE.md, PROGRESS.md
+  - Frontend: ARCHITECTURE.md, PROGRESS.md
+  - Workspace: DEFINITION_OF_DONE.md
+- **Tests**: +0 added, 0 modified (existing 555 backend + 189 frontend pass at strict thresholds)
+- **Review**: APPROVED (inline — make check + make dod pass in both repos, no auto-reject triggers)
+- **DoD**: PASSED (`make dod` green in both repos)
+- **Notes**: Backend line limit ratcheted 1300→800 (not 400 as originally planned — gap_analyzer.py at 775 lines). Backend class limit 35→12. Frontend stays at 400 (CompetitorForm.tsx at 370 lines prevents reaching 300).
+
 ### CHG-034: Split SidePanel dual contract
 
 - **Date**: 2026-02-10

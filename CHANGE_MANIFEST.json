@@ -1,12 +1,12 @@
 {
   "contract_version": "1.8.0",
-  "last_change_id": "CHG-034",
-  "backend_commit": "ba7513c",
-  "frontend_commit": "b99ae9b",
+  "last_change_id": "CHG-035",
+  "backend_commit": "1c53e6c",
+  "frontend_commit": "971e5a1",
   "compatibility": {
     "backend_min_contract": "1.5.0",
     "frontend_min_contract": "1.5.0"
   },
   "updated_at": "2026-02-10",
-  "notes": "CHG-034: Split SidePanel dual contract into BusinessSidePanel + TechnicalSidePanel. No schema change."
+  "notes": "CHG-035: Ratchet SOLID thresholds — backend line 1300→800, class 35→12. 12-CHG SOLID refactoring plan complete."
 }
